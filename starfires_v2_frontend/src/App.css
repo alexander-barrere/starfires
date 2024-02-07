@@ -1,0 +1,198 @@
+/* General reset and base styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f0f2f5;
+    color: #444;
+    line-height: 1.6;
+}
+
+/* Utility classes for spacing */
+.mt-5 {
+    margin-top: 4rem;
+}
+
+.mb-4 {
+    margin-bottom: 2rem;
+}
+
+.my-4 {
+    margin: 2rem 0;
+}
+
+.my-5 {
+    margin: 4rem 0;
+}
+
+/* Styling for the main container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    overflow: hidden;
+}
+
+/* Header and titles */
+h1,
+h2,
+h3 {
+    color: #333;
+    font-weight: 300;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Navigation bar styling */
+/* Navigation Bar Styles */
+.navbar-custom {
+    background-color: #333;
+    /* Adjust to match your theme */
+    border-bottom: 2px solid #007bff;
+    /* A highlight border, for example */
+}
+
+.navbar-brand,
+.nav-link {
+    color: #fff !important;
+    /* Ensure text color is white */
+}
+
+.nav-link {
+    margin-right: 20px;
+    /* Space out links */
+}
+
+.nav-link:hover {
+    color: #007bff !important;
+    /* Highlight color on hover */
+}
+
+/* Adjust toggle button color */
+.navbar-dark .navbar-toggler {
+    border-color: #007bff;
+}
+
+.navbar-dark .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='%23007bff' viewBox='0 0 30 30'><path stroke='%23007bff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
+}
+
+
+/* Hero header styles */
+.hero-header {
+    text-align: center;
+    padding: 4rem 0;
+    background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+    color: #fff;
+}
+
+/* Card styles for feature sections */
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card img {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    max-height: 200px;
+    width: 100%;
+    object-fit: cover;
+}
+
+.card-title {
+    font-size: 1.2rem;
+    margin-top: 1rem;
+}
+
+.card-text {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+}
+
+/* Button styles */
+.btn {
+    border: none;
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.btn-primary {
+    background-color: #5e72e4;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #324cdd;
+}
+
+.btn-secondary {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.btn-secondary:hover {
+    background-color: #e4e4e4;
+}
+
+/* Testimonial section styling */
+.testimonial {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.testimonial::before {
+    content: '“';
+    font-size: 5rem;
+    color: rgba(0, 0, 0, 0.1);
+    position: absolute;
+    top: -1.5rem;
+    left: -1.5rem;
+}
+
+/* Responsive design */
+@media screen and (max-width: 768px) {
+    .hero-header {
+        padding: 2rem 0;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .testimonial::before {
+        font-size: 3rem;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .navbar {
+        text-align: center;
+    }
+
+    .btn {
+        display: block;
+        width: 100%;
+        margin-top: 1rem;
+    }
+}
