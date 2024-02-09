@@ -3,11 +3,15 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavigationBar from './components/NavigationBar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
-import Stargate from './pages/Stargate'; // Ensure you have these components created
-import Library from './pages/Library';
+import LoginPage from './pages/LoginPage';
+import RegistrationPage from './pages/RegistrationPage';
 import Treasures from './pages/Treasures';
+import Library from './pages/Library';
 import Mastery from './pages/Mastery';
 import Consultations from './pages/Consultations';
+import Stargate from './pages/Stargate';
+import CartPage from './pages/CartPage';
+// Import other pages components
 import './App.css';
 
 function App() {
@@ -17,12 +21,15 @@ function App() {
         <NavigationBar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/stargate" element={<Stargate />} />
-          <Route path="/library" element={<Library />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegistrationPage />} />
           <Route path="/treasures" element={<Treasures />} />
+          <Route path="/library" element={<Library />} />
           <Route path="/mastery" element={<Mastery />} />
           <Route path="/consultations" element={<Consultations />} />
-          {/* Define additional routes here */}
+          <Route path="/stargate" element={<Stargate />} />
+          <Route path="/cart" element={<CartPage />} />
+          {/* Add more routes as needed */}
         </Routes>
         <Footer />
       </div>

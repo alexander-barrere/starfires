@@ -14,4 +14,10 @@ router.post('/login', [
   check('password', 'Password is required').exists()
 ], UserController.login);
 
+// Add admin login route
+router.post('/admin/login', [
+  check('email', 'Please include a valid email').isEmail(),
+  check('password', 'Password is required').exists()
+], UserController.adminLogin);
+
 module.exports = router;

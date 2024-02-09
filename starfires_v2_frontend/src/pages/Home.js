@@ -14,7 +14,7 @@ const Home = () => {
       <Row className="my-4">
         <Col md={4}>
           <Card>
-            <Card.Img variant="top" src="path-to-your-image.jpg" />
+            <Card.Img variant="top" src="/images/venus.jpg" />
             <Card.Body>
               <Card.Title>Live Astrology Chat</Card.Title>
               <Card.Text>Join our live sessions and chat with Christine in real-time.</Card.Text>
@@ -24,7 +24,7 @@ const Home = () => {
         </Col>
         <Col md={4}>
           <Card>
-            <Card.Img variant="top" src="path-to-your-image.jpg" />
+            <Card.Img variant="top" src="/images/venus_2.jpg" />
             <Card.Body>
               <Card.Title>Astrology Treasures</Card.Title>
               <Card.Text>Discover our exclusive selection of astrology books.</Card.Text>
@@ -34,7 +34,7 @@ const Home = () => {
         </Col>
         <Col md={4}>
           <Card>
-            <Card.Img variant="top" src="path-to-your-image.jpg" />
+            <Card.Img variant="top" src="/images/saturn.jpg" />
             <Card.Body>
               <Card.Title>Learn & Master</Card.Title>
               <Card.Text>Enroll in our courses and master the art of astrology.</Card.Text>

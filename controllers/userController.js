@@ -88,3 +88,38 @@ exports.login = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+
+exports.adminLogin = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    let user = await User.findOne({ email });
+    if (!user || user.role !== 'admin') {
+      return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
+    }
+
+    const payload = {
+      user: {
+        id: user.id
+      }
+    };
+
+    jwt.sign(
+      payload,
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' },
+      (err, token) => {
+        if (err) throw err;
+        res.json({ token });
+      }
+    );
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+};
