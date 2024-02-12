@@ -1,0 +1,179 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "parse_development_task",
+      "description": "Breaks down the development task into smaller steps that need to be done to implement the entire task.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "description": "List of smaller development steps that need to be done to complete the entire task.",
+            "items": {
+              "type": "object",
+              "description": "A smaller development step that needs to be done to complete the entire task.  Remember, if you need to run a command that doesn't finish by itself (eg. a command to run an  If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "command",
+                    "code_change",
+                    "human_intervention"
+                  ],
+                  "description": "Type of the development step that needs to be done to complete the entire task."
+                },
+                "command": {
+                  "type": "object",
+                  "description": "Command that needs to be run to complete the current task. This should be used only if the task is of a type \"command\".",
+                  "properties": {
+                    "command": {
+                      "type": "string",
+                      "description": "A single command that needs to be executed."
+                    },
+                    "timeout": {
+                      "type": "number",
+                      "description": "Timeout in milliseconds that represent the approximate time this command takes to finish. If you need to run a command that doesnt't finish by itself (eg. a command to run an app), set the timeout to to a value long enough to determine that it has started successfully and provide a command_id. If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`"
+                    },
+                    "success_message": {
+                      "type": "string",
+                      "description": "A message to look for in the output of the command to determine if successful or not."
+                    },
+                    "command_id": {
+                      "type": "string",
+                      "description": "If the process needs to continue running after the command is executed provide a unique command identifier which you can use to kill the process later."
+                    }
+                  },
+                  "required": [
+                    "command",
+                    "timeout"
+                  ]
+                },
+                "code_change": {
+                  "type": "object",
+                  "description": "A code change that needs to be implemented. This should be used only if the task is of a type \"code_change\".",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the file that needs to be implemented."
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "Full path of the file with the file name that needs to be implemented."
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Full content of the file that needs to be implemented. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "path",
+                    "content"
+                  ]
+                },
+                "human_intervention_description": {
+                  "type": "string",
+                  "description": "Description of a step in debugging this issue when there is a human intervention needed. This should be used only if the task is of a type \"human_intervention\"."
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "tasks"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "tasks": [
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "Product.js",
+          "path": "/models/Product.js",
+          "content": "const mongoose = require('mongoose');\n\nconst ProductSchema = new mongoose.Schema({\n  title: {\n    type: String,\n    required: true\n  },\n  description: {\n    type: String,\n    required: true\n  },\n  price: {\n    type: Number,\n    required: true\n  },\n  imageUrl: {\n    type: String,\n    required: false\n  },\n  createdAt: {\n    type: Date,\n    default: Date.now\n  }\n});\n\nmodule.exports = mongoose.model('Product', ProductSchema);\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "productController.js",
+          "path": "/controllers/productController.js",
+          "content": "[OLD CODE] The existing module imports and express-validator setup.\nconst Product = require('../models/Product');\n\nexports.getProducts = async (req, res) => {\n  try {\n    const products = await Product.find({});\n    res.json(products);\n  } catch (error) {\n    console.error(error);\n    res.status(500).send('Server Error');\n  }\n};\n\nexports.getProductById = async (req, res) => {\n  try {\n    const product = await Product.findById(req.params.id);\n    if (!product) {\n      return res.status(404).send('Product not found');\n    }\n    res.json(product);\n  } catch (error) {\n    console.error(error);\n    res.status(500).send('Server Error');\n  }\n};\n\nexports.createProduct = async (req, res) => {\n  const { title, description, price, imageUrl } = req.body;\n\n  try {\n    let newProduct = new Product({\n      title,\n      description,\n      price,\n      imageUrl\n    });\n\n    const savedProduct = await newProduct.save();\n    res.json(savedProduct);\n  } catch (error) {\n    console.error(error);\n    res.status(500).send('Server Error');\n  }\n};\n\nexports.updateProduct = async (req, res) => {\n  const { title, description, price, imageUrl } = req.body;\n\n  try {\n    let product = await Product.findById(req.params.id);\n    if (!product) {\n      return res.status(404).send('Product not found');\n    }\n\n    product.title = title;\n    product.description = description;\n    product.price = price;\n    product.imageUrl = imageUrl;\n\n    await product.save();\n    res.json(product);\n  } catch (error) {\n    console.error(error);\n    res.status(500).send('Server Error');\n  }\n};\n\nexports.deleteProduct = async (req, res) => {\n  try {\n    const product = await Product.findById(req.params.id);\n    if (!product) {\n      return res.status(404).send('Product not found');\n    }\n\n    await product.remove();\n    res.json({ msg: 'Product removed' });\n  } catch (error) {\n    console.error(error);\n    res.status(500).send('Server Error');\n  }\n};\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "productRoutes.js",
+          "path": "/routes/productRoutes.js",
+          "content": "const express = require('express');\nconst { check } = require('express-validator');\nconst productController = require('../controllers/productController');\nconst router = express.Router();\n\nrouter.get('/', productController.getProducts);\nrouter.get('/:id', productController.getProductById);\nrouter.post('/', [\n  check('title', 'Title is required').not().isEmpty(),\n  check('price', 'Price must be a valid number').isFloat({ gt: 0 })\n], productController.createProduct);\nrouter.put('/:id', [\n  check('title', 'Title is required').not().isEmpty(),\n  check('price', 'Price must be a valid number').isFloat({ gt: 0 })\n], productController.updateProduct);\nrouter.delete('/:id', productController.deleteProduct);\n\nmodule.exports = router;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "server.js",
+          "path": "/server.js",
+          "content": "[OLD CODE] Previous middleware, database connection, and socket.io setup.\nconst productRoutes = require('./routes/productRoutes');\napp.use('/api/products', productRoutes);\n\n[OLD CODE] Error handler and remaining server setup code.\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "Cart.js",
+          "path": "/starfires_v2_frontend/src/components/Cart.js",
+          "content": "import React, { useState, useEffect } from 'react';\nimport CartItem from './CartItem';\nimport axios from 'axios';\n\nconst Cart = () => {\n  const [cartItems, setCartItems] = useState([]);\n  \n  useEffect(() => {\n    // Ideally should retrieve the cart items from the server or local storage\n    let savedCartItems = []; // Replace with actual retrieval logic\n    setCartItems(savedCartItems);\n  }, []);\n\n  const addToCart = async (productId) => {\n    try {\n      const { data: product } = await axios.get(`http://localhost:3001/api/products/${productId}`);\n      setCartItems([...cartItems, {...product, quantity: 1 }]);\n    } catch (error) {\n      console.error(error);\n    }\n  };\n\n  const removeFromCart = (productId) => {\n    const updatedCartItems = cartItems.filter(item => item._id !== productId);\n    setCartItems(updatedCartItems);\n  };\n\n  const updateQuantity = (productId, newQuantity) => {\n    const updatedCartItems = cartItems.map(item => {\n      if (item._id === productId) {\n        return { ...item, quantity: newQuantity };\n      }\n      return item;\n    });\n    setCartItems(updatedCartItems);\n  };\n\n  return (\n    <div>\n      <h2>Your Cart</h2>\n      {cartItems.map(item => (\n        <CartItem key={item._id} item={item} updateQuantity={updateQuantity} removeFromCart={removeFromCart} />\n      ))}\n      {/* Add checkout button and other functionalities as needed */}\n    </div>\n  );\n};\n\nexport default Cart;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "CartItem.js",
+          "path": "/starfires_v2_frontend/src/components/CartItem.js",
+          "content": "import React from 'react';\n\nconst CartItem = ({ item, updateQuantity, removeFromCart }) => {\n  return (\n    <div className=\"cart-item\">\n      <h3>{item.title}</h3>\n      <p>{item.description}</p>\n      <div>\n        <button onClick={() => updateQuantity(item._id, item.quantity - 1)}>-</button>\n        <span> Quantity: {item.quantity} </span>\n        <button onClick={() => updateQuantity(item._id, item.quantity + 1)}>+</button>\n      </div>\n      <button onClick={() => removeFromCart(item._id)}>Remove from Cart</button>\n    </div>\n  );\n};\n\nexport default CartItem;\n"
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "npm install",
+          "timeout": 120000,
+          "success_message": "added"
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "cd starfires_v2_frontend && npm install",
+          "timeout": 120000,
+          "success_message": "added"
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "npm start",
+          "timeout": 30000,
+          "success_message": "Compiled successfully",
+          "command_id": "backend_server"
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "cd starfires_v2_frontend && npm start",
+          "timeout": 30000,
+          "success_message": "Compiled successfully",
+          "command_id": "frontend_server"
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "get_fully_coded_file",
+      "description": "Gets the fully coded file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_content": {
+            "type": "string",
+            "description": "Fully coded file. This contains only the lines of code and no other text."
+          }
+        },
+        "required": [
+          "file_content"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "file_content": "// All the imports required for the controller\nconst Course = require('../models/Course');\nconst UserProgress = require('../models/UserProgress');\nconst Assessment = require('../models/Assessment');\nconst AstroChart = require('@astrodraw/astrochart');\n\n// Define all the controller functions here\n// Function to retrieve all courses\nexports.getCourses = async (req, res) => {\n  try {\n    const courses = await Course.find();\n    res.json(courses);\n  } catch (err) {\n    console.error(err.message);\n    res.status(500).send('Server Error');\n  }\n};\n\n// Function to get user progress for a specific course\nexports.getUserProgress = async (req, res) => {\n  try {\n    const userId = req.user.id;\n    const courseId = req.params.courseId;\n    const progress = await UserProgress.findOne({ user: userId, course: courseId });\n    if (!progress) {\n      return res.status(404).json({ msg: 'Progress not found' });\n    }\n    res.json(progress);\n  } catch (err) {\n    console.error(err.message);\n    res.status(500).send('Server Error');\n  }\n};\n\n// Function to get assessment for a specific course\nexports.getAssessmentForCourse = async (req, res) => {\n  try {\n    const courseId = req.params.courseId;\n    const assessment = await Assessment.findOne({ course: courseId });\n    if (!assessment) {\n      return res.status(404).json({ msg: 'Assessment not found' });\n    }\n    res.json(assessment);\n  } catch (err) {\n    console.error(err.message);\n    res.status(500).send('Server Error');\n  }\n};\n\nexports.getAstrologyChart = (req, res) => {\n  try {\n    const { birthDate, birthTime, birthPlace } = req.body;\n    const chartParameters = {\n      // INPUT_REQUIRED {Define the required parameters for AstroChart based on user input}\n    };\n\n    const astrologyChart = new AstroChart(chartParameters);\n    const result = astrologyChart.draw();\n\n    res.json(result);\n  } catch (err) {\n    console.error(err);\n    res.status(500).send('Server error');\n  }\n};\n"
+  }
+}

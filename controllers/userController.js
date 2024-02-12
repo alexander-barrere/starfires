@@ -8,20 +8,27 @@ exports.register = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  
-  let { username, email, password } = req.body;
-  
+  const { username, email, password, birthDate, birthTime, birthLatitude, birthLongitude } = req.body;
   try {
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
     }
 
+    const birthDateObject = birthDate ? new Date(birthDate) : null;
+
     user = new User({
       username,
       email,
-      password
+      password,
+      birthDate: birthDateObject,
+      birthTime,
+      birthLatitude: parseFloat(birthLatitude),
+      birthLongitude: parseFloat(birthLongitude)
     });
+
+    user.isSubscriber = false;
+    user.role = 'user';
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);
@@ -49,46 +56,6 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
-  const { email, password } = req.body;
-
-  try {
-    let user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
-    }
-
-    const payload = {
-      user: {
-        id: user.id
-      }
-    };
-
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: 3600 },
-      (err, token) => {
-        if(err) throw err;
-        res.json({ token });
-      }
-    );
-  } catch(err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
-};
-
 exports.adminLogin = async (req, res) => {
   const { email, password } = req.body;
 
@@ -103,23 +70,26 @@ exports.adminLogin = async (req, res) => {
       return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
     }
 
-    const payload = {
-      user: {
-        id: user.id
-      }
-    };
+    if (user.role === 'admin') {
+      const payload = {
+        user: {
+          id: user.id
+        }
+      };
 
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: '1h' },
-      (err, token) => {
-        if (err) throw err;
-        res.json({ token });
-      }
-    );
+      jwt.sign(
+        payload,
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' },
+        (err, token) => {
+          if (err) throw err;
+          res.json({ token });
+        }
+      );
+    }
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
   }
 };
+

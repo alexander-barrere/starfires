@@ -1,0 +1,25 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "get_fully_coded_file",
+      "description": "Gets the fully coded file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_content": {
+            "type": "string",
+            "description": "Fully coded file. This contains only the lines of code and no other text."
+          }
+        },
+        "required": [
+          "file_content"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "file_content": "import React from 'react';\nimport { Navbar, Nav } from 'react-bootstrap';\nimport { Link } from 'react-router-dom';\n\nconst NavigationBar = () => {\n  return (\n    <Navbar bg=\"dark\" variant=\"dark\" expand=\"lg\" sticky=\"top\" className=\"navbar-custom\">\n      <Link to=\"/\" className=\"navbar-brand\">Starfires V2</Link>\n      <Navbar.Toggle aria-controls=\"basic-navbar-nav\" />\n      <Navbar.Collapse id=\"basic-navbar-nav\">\n        <Nav className=\"ml-auto\">\n          <Nav.Item>\n            <Link to=\"/\" className=\"nav-link\">Home</Link>\n          </Nav.Item>\n          <Nav.Item>\n            <Link to=\"/stargate\" className=\"nav-link\">Stargate</Link>\n          </Nav.Item>\n          <Nav.Item>\n            <Link to=\"/library\" className=\"nav-link\">Library</Link>\n          </Nav.Item>\n          <Nav.Item>\n            <Link to=\"/treasures\" className=\"nav-link\">Treasures</Link>\n          </Nav.Item>\n          <Nav.Item>\n            <Link to=\"/mastery\" className=\"nav-link\">Mastery</Link>\n          </Nav.Item>\n          <Nav.Item>\n            <Link to=\"/consultations\" className=\"nav-link\">Consultations</Link>\n          </Nav.Item>\n          <Nav.Item>\n            <Link to=\"/cart\" className=\"nav-link\">Cart</Link>\n          </Nav.Item>\n          <Nav.Item>\n            <Link to=\"/login\" className=\"nav-link\">Login</Link>\n          </Nav.Item>\n          <Nav.Item>\n            <Link to=\"/register\" className=\"nav-link\">Register</Link>\n          </Nav.Item>\n        </Nav>\n      </Navbar.Collapse>\n    </Navbar>\n  );\n};\n\nexport default NavigationBar;\n"
+  }
+}

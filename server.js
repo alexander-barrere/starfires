@@ -31,6 +31,12 @@ require('./sockets')(io);
 const productRoutes = require('./routes/productRoutes');
 app.use('/api/products', productRoutes);
 
+const astrologyRoutes = require('./routes/astrologyRoutes');
+app.use('/api/astrology-charts', astrologyRoutes);
+
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
+
 const blogRoutes = require('./routes/blogRoutes');
 app.use('/api/posts', blogRoutes);
 

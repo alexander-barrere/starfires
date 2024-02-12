@@ -7,12 +7,27 @@ const RegistrationPage = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [birthDate, setBirthDate] = useState('');
+    const [birthTime, setBirthTime] = useState('');
+    const [birthLatitude, setBirthLatitude] = useState('');
+    const [birthLongitude, setBirthLongitude] = useState('');
     const navigate = useNavigate();
 
     const handleRegistration = async (event) => {
         event.preventDefault();
         try {
-            await axios.post('/users/register', { username, email, password });
+            const formattedBirthDate = new Date(birthDate).toISOString();
+
+            await axios.post('/users/register', {
+                username,
+                email,
+                password,
+                birthDate: formattedBirthDate,
+                birthTime,
+                birthLatitude,
+                birthLongitude
+            });
+
             navigate('/login'); // Redirect to login page upon successful registration
         } catch (error) {
             console.error(error.response.data);
@@ -40,6 +55,26 @@ const RegistrationPage = () => {
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicBirthDate">
+                    <Form.Label>Birth Date</Form.Label>
+                    <Form.Control type="date" placeholder="Enter birth date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} required />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicBirthTime">
+                    <Form.Label>Birth Time</Form.Label>
+                    <Form.Control type="time" placeholder="Enter birth time" value={birthTime} onChange={(e) => setBirthTime(e.target.value)} required />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicBirthLatitude">
+                    <Form.Label>Birth Latitude</Form.Label>
+                    <Form.Control type="number" step="0.000001" placeholder="Enter birth latitude" value={birthLatitude} onChange={(e) => setBirthLatitude(e.target.value)} required />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicBirthLongitude">
+                    <Form.Label>Birth Longitude</Form.Label>
+                    <Form.Control type="number" step="0.000001" placeholder="Enter birth longitude" value={birthLongitude} onChange={(e) => setBirthLongitude(e.target.value)} required />
                 </Form.Group>
 
                 <Button variant="primary" type="submit">

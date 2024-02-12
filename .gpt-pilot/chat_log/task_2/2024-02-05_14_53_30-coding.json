@@ -1,0 +1,25 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "get_fully_coded_file",
+      "description": "Gets the fully coded file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_content": {
+            "type": "string",
+            "description": "Fully coded file. This contains only the lines of code and no other text."
+          }
+        },
+        "required": [
+          "file_content"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "file_content": "const express = require('express');\nconst connectDB = require('./config/db');\n\n// Connect Database\nconnectDB();\n\nconst app = express();\nconst PORT = process.env.PORT || 3001; // INPUT_REQUIRED {Change the port if 3001 is also reserved or in use}\n\napp.get('/api/ping', (req, res) => {\n  res.json({ message: 'pong' });\n});\n\napp.listen(PORT, () => {\n  console.log(`Server running on port ${PORT}`);\n});"
+  }
+}

@@ -1,0 +1,133 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "parse_development_task",
+      "description": "Breaks down the development task into smaller steps that need to be done to implement the entire task.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "description": "List of smaller development steps that need to be done to complete the entire task.",
+            "items": {
+              "type": "object",
+              "description": "A smaller development step that needs to be done to complete the entire task.  Remember, if you need to run a command that doesn't finish by itself (eg. a command to run an  If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "command",
+                    "code_change",
+                    "human_intervention"
+                  ],
+                  "description": "Type of the development step that needs to be done to complete the entire task."
+                },
+                "command": {
+                  "type": "object",
+                  "description": "Command that needs to be run to complete the current task. This should be used only if the task is of a type \"command\".",
+                  "properties": {
+                    "command": {
+                      "type": "string",
+                      "description": "A single command that needs to be executed."
+                    },
+                    "timeout": {
+                      "type": "number",
+                      "description": "Timeout in milliseconds that represent the approximate time this command takes to finish. If you need to run a command that doesnt't finish by itself (eg. a command to run an app), set the timeout to to a value long enough to determine that it has started successfully and provide a command_id. If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`"
+                    },
+                    "success_message": {
+                      "type": "string",
+                      "description": "A message to look for in the output of the command to determine if successful or not."
+                    },
+                    "command_id": {
+                      "type": "string",
+                      "description": "If the process needs to continue running after the command is executed provide a unique command identifier which you can use to kill the process later."
+                    }
+                  },
+                  "required": [
+                    "command",
+                    "timeout"
+                  ]
+                },
+                "code_change": {
+                  "type": "object",
+                  "description": "A code change that needs to be implemented. This should be used only if the task is of a type \"code_change\".",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the file that needs to be implemented."
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "Full path of the file with the file name that needs to be implemented."
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Full content of the file that needs to be implemented. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "path",
+                    "content"
+                  ]
+                },
+                "human_intervention_description": {
+                  "type": "string",
+                  "description": "Description of a step in debugging this issue when there is a human intervention needed. This should be used only if the task is of a type \"human_intervention\"."
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "tasks"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "tasks": [
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "axiosDefaults.js",
+          "path": "/starfires_v2_frontend/src/utils/axiosDefaults.js",
+          "content": "import axios from 'axios';\n\n// Set up default config for axios requests\naxios.defaults.baseURL = 'http://localhost:3001/api';\naxios.defaults.headers.common['Authorization'] = localStorage.getItem('token') ? `Bearer ${localStorage.getItem('token')}` : undefined;\naxios.defaults.headers.post['Content-Type'] = 'application/json';\naxios.defaults.withCredentials = true;\n\nexport default axios;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "LoginPage.js",
+          "path": "/starfires_v2_frontend/src/pages/LoginPage.js",
+          "content": "import React, { useState } from 'react';\nimport { Container, Form, Button } from 'react-bootstrap';\nimport axios from '../utils/axiosDefaults';\nimport { useNavigate } from 'react-router-dom';\n\nconst LoginPage = () => {\n    const [email, setEmail] = useState('');\n    const [password, setPassword] = useState('');\n    const navigate = useNavigate();\n\n    const handleSubmit = async (event) => {\n        event.preventDefault();\n        try {\n            const response = await axios.post('/users/login', { email, password });\n            localStorage.setItem('token', response.data.token);\n            navigate('/');\n        } catch (error) {\n            console.error(error.response.data);\n            alert(error.response.data.errors[0].msg); // Show login error to the user\n        }\n    };\n\n    return (\n        <Container>\n            <h1>Login</h1>\n            <Form onSubmit={handleSubmit}>\n                {/* [OLD CODE] Remaining form fields and structure */}\n                <Button variant=\"primary\" type=\"submit\">\n                    Login\n                </Button>\n            </Form>\n        </Container>\n    );\n};\n\nexport default LoginPage;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "RegistrationPage.js",
+          "path": "/starfires_v2_frontend/src/pages/RegistrationPage.js",
+          "content": "import React, { useState } from 'react';\nimport { Container, Form, Button } from 'react-bootstrap';\nimport axios from '../utils/axiosDefaults';\nimport { useNavigate } from 'react-router-dom';\n\nconst RegistrationPage = () => {\n    const [username, setUsername] = useState('');\n    const [email, setEmail] = useState('');\n    const [password, setPassword] = useState('');\n    const navigate = useNavigate();\n\n    const handleRegistration = async (event) => {\n        event.preventDefault();\n        try {\n            await axios.post('/users/register', { username, email, password });\n            navigate('/login'); // Redirect to login page upon successful registration\n        } catch (error) {\n            console.error(error.response.data);\n            alert(error.response.data.errors[0].msg); // Show registration error to the user\n        }\n    };\n\n    return (\n        <Container>\n            <h1>Register</h1>\n            <Form onSubmit={handleRegistration}>\n                {/* [OLD CODE] Remaining form fields and structure */}\n                <Button variant=\"primary\" type=\"submit\">\n                    Register\n                </Button>\n            </Form>\n        </Container>\n    );\n};\n\nexport default RegistrationPage;\n"
+        }
+      },
+      {
+        "type": "human_intervention",
+        "human_intervention_description": "Review CORS configuration on the Node.js backend to ensure credentials are being sent and accepted between different domains. This may involve setting specific headers and whitelisting the frontend domain."
+      },
+      {
+        "type": "human_intervention",
+        "human_intervention_description": "Confirm that the MongoDB service is running and the `starfires_v2` database exists and is accessible."
+      },
+      {
+        "type": "human_intervention",
+        "human_intervention_description": "If OAuth integration is desired, set up OAuth strategies using packages like `passport-google-oauth20` or `passport-facebook`. This will require modification of the backend Node.js code to handle OAuth authorization, token generation, and user creation/authentication based on those tokens."
+      }
+    ]
+  }
+}

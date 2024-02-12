@@ -1,0 +1,25 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "get_fully_coded_file",
+      "description": "Gets the fully coded file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_content": {
+            "type": "string",
+            "description": "Fully coded file. This contains only the lines of code and no other text."
+          }
+        },
+        "required": [
+          "file_content"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "file_content": "const User = require('../models/User');\n\nexports.updateProfile = async (req, res) => {\n  try {\n    const { birthDate, birthTime, birthLatitude, birthLongitude } = req.body;\n    const user = await User.findById(req.user.id);\n    \n    if (!user) {\n      return res.status(404).json({ msg: 'User not found' });\n    }\n\n    user.birthDate = birthDate;\n    user.birthTime = birthTime;\n    user.birthLatitude = birthLatitude;\n    user.birthLongitude = birthLongitude;\n    // Add additional fields to update\n    user.isSubscriber = req.body.isSubscriber !== undefined ? req.body.isSubscriber : user.isSubscriber;\n    user.role = req.body.role || user.role;\n    \n    await user.save();\n    res.json(user);\n  } catch (err) {\n    console.error(err);\n    res.status(500).send('Server Error');\n  }\n};\n\nexports.getAstrologyChart = async (req, res) => {\n  try {\n    const user = await User.findById(req.user.id);\n\n    if (!user) {\n      return res.status(404).json({ msg: 'User not found' });\n    }\n\n    const svgChart = \"\"; // TODO: Implement actual logic to generate SVG chart based on user's profile\n\n    res.set('Content-Type', 'image/svg+xml');\n    res.send(svgChart);\n  } catch (err) {\n    console.error(err);\n    res.status(500).send('Server Error');\n  }\n};\n"
+  }
+}

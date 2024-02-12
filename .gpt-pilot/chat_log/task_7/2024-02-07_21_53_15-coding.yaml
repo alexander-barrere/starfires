@@ -1,0 +1,49 @@
+endpoint: OPENAI
+model: gpt-4-1106-preview
+messages:
+- role: system
+  content: You are a full stack software developer who works in a software development agency. You write very modular and
+    clean code. Your job is to implement tasks that your tech lead assigns you. Each task has a description of what needs
+    to be implemented, a programmatic goal that will determine if a task can be marked as done and user-review goal that will
+    determine if a task is done or not but from a user perspective since it will be reviewed by a human.
+- role: user
+  content: "Here is how the file `/server.js` looks like right now:\n```\nconst express = require('express');\nconst http\
+    \ = require('http');\nconst socketIo = require('socket.io');\nconst connectDB = require('./config/db');\nconst User =\
+    \ require('./models/User');\nconst passport = require('passport');\nconst cors = require('cors'); // Added CORS\n\n//\
+    \ Connect Database\nconnectDB();\n\nconst app = express();\napp.use(cors({ origin: '*' })); // Enable CORS for all routes\n\
+    const server = http.createServer(app);\nconst io = socketIo(server, {\n    cors: {\n        origin: '*',\n        methods:\
+    \ ['GET', 'POST']\n    }\n});\n\n// Middleware\napp.use(express.json());\nrequire('./config/auth')(passport);\napp.use(passport.initialize());\n\
+    const authRoutes = require('./routes/auth');\napp.use('/api/users', authRoutes);\n\n// Include setup function for socket\
+    \ event listeners\nrequire('./sockets')(io);\nconst productRoutes = require('./routes/productRoutes');\napp.use('/api/products',\
+    \ productRoutes);\n\nconst PORT = process.env.PORT || 3001;\n\napp.get('/api/ping', (req, res) => {\n    res.json({ message:\
+    \ 'pong' });\n});\n\nserver.listen(PORT, () => {\n    console.log(`Server running on port ${PORT}`);\n});\n\n```\n\nAnd\
+    \ here is the new implementation for the same file:\n```\nconst express = require('express');\nconst http = require('http');\n\
+    const socketIo = require('socket.io');\nconst connectDB = require('./config/db');\nconst User = require('./models/User');\n\
+    const passport = require('passport');\nconst cors = require('cors');\n\nconnectDB();\n\nconst app = express();\napp.use(cors({\
+    \ origin: '*' }));\nconst server = http.createServer(app);\nconst io = socketIo(server, {\n    cors: {\n        origin:\
+    \ '*',\n        methods: ['GET', 'POST']\n    }\n});\n\napp.use(express.json());\nrequire('./config/auth')(passport);\n\
+    app.use(passport.initialize());\n\n[OLD CODE] Previous route imports.\nconst blogRoutes = require('./routes/blogRoutes');\n\
+    app.use('/api/posts', blogRoutes);\n\n[OLD CODE] Previous app setup like routes, socket setup and server start.\n\n```\n\
+    \nNow, implement the new changes into the previously implemented file and return the entirely coded file. Do not add any\
+    \ lines of code that are not in the previously coded file or the new implementation but only combine those two.\n\n**IMPORTANT**\n\
+    All lines of code in the new implementation should be present. From the old implementation, only take the ones that are\
+    \ replaced with the comment `[OLD CODE]` in the new implementation\n\n**IMPORTANT**\nMake sure that you respond with all\
+    \ lines of code that are replaced by these comments, including all control structures, error handling, and any other relevant\
+    \ logic that was in the original code.\nUnder no circumstances should you ever leave any part of the code snippet unwritten.\
+    \ Every single line of code that exists in the place where the comment lives right now should be replaced. Do not include\
+    \ any code that is above or below the comment but only the code that should be in the position of the comment."
+- role: user
+  content: "**IMPORTANT**\nYou must respond with ONLY the JSON object, with NO additional text or explanation.\n\nHere is\
+    \ the schema for the expected JSON object:\n```json\n{\n    \"file_content\": {\n        \"type\": \"string\",\n     \
+    \   \"description\": \"Fully coded file. This contains only the lines of code and no other text.\"\n    }\n}\n```\n\n"
+response: "```json\n{\n    \"file_content\": \"const express = require('express');\\nconst http = require('http');\\nconst\
+  \ socketIo = require('socket.io');\\nconst connectDB = require('./config/db');\\nconst User = require('./models/User');\\\
+  nconst passport = require('passport');\\nconst cors = require('cors'); // Added CORS\\n\\n// Connect Database\\nconnectDB();\\\
+  n\\nconst app = express();\\napp.use(cors({ origin: '*' })); // Enable CORS for all routes\\nconst server = http.createServer(app);\\\
+  nconst io = socketIo(server, {\\n    cors: {\\n        origin: '*',\\n        methods: ['GET', 'POST']\\n    }\\n});\\n\\\
+  n// Middleware\\napp.use(express.json());\\nrequire('./config/auth')(passport);\\napp.use(passport.initialize());\\nconst\
+  \ authRoutes = require('./routes/auth');\\napp.use('/api/users', authRoutes);\\n\\n// Include setup function for socket\
+  \ event listeners\\nrequire('./sockets')(io);\\nconst productRoutes = require('./routes/productRoutes');\\napp.use('/api/products',\
+  \ productRoutes);\\n\\nconst blogRoutes = require('./routes/blogRoutes');\\napp.use('/api/posts', blogRoutes);\\n\\nconst\
+  \ PORT = process.env.PORT || 3001;\\n\\napp.get('/api/ping', (req, res) => {\\n    res.json({ message: 'pong' });\\n});\\\
+  n\\nserver.listen(PORT, () => {\\n    console.log(`Server running on port ${PORT}`);\\n});\\n\"\n}\n```"

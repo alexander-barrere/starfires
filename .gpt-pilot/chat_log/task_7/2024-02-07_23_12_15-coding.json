@@ -1,0 +1,25 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "get_fully_coded_file",
+      "description": "Gets the fully coded file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_content": {
+            "type": "string",
+            "description": "Fully coded file. This contains only the lines of code and no other text."
+          }
+        },
+        "required": [
+          "file_content"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "file_content": "const express = require('express');\nconst http = require('http');\nconst socketIo = require('socket.io');\nconst connectDB = require('./config/db');\nconst passport = require('passport');\nconst cors = require('cors');\n\n// Connect Database\nconnectDB();\n\nconst app = express();\napp.use(cors({ origin: 'http://localhost:3000', credentials: true })); // Enable CORS for routes\nconst server = http.createServer(app);\nconst io = socketIo(server, {\n    cors: {\n        origin: 'http://localhost:3000',\n        credentials: true,\n        methods: ['GET', 'POST']\n    }\n});\n\n// Middleware\napp.use(express.json());\nrequire('./config/auth')(passport);\napp.use(passport.initialize());\nconst authRoutes = require('./routes/auth');\napp.use('/api/users', authRoutes);\n\n// Include setup function for socket event listeners\nrequire('./sockets')(io);\nconst productRoutes = require('./routes/productRoutes');\napp.use('/api/products', productRoutes);\n\nconst blogRoutes = require('./routes/blogRoutes');\napp.use('/api/posts', blogRoutes);\n\nconst subscriptionRoutes = require('./routes/subscriptionRoutes');\napp.use('/api/subscribe', subscriptionRoutes);\n\nconst PORT = process.env.PORT || 3001;\n\napp.get('/api/ping', (req, res) => {\n    res.json({ message: 'pong' });\n});\n\nserver.listen(PORT, () => {\n    console.log(`Server running on port ${PORT}`);\n});\n"
+  }
+}

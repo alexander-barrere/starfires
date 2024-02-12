@@ -1,0 +1,67 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "save_files",
+      "description": "Iterates over the files passed to this function and saves them on the disk.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "description": "List of files that need to be saved.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the file that needs to be saved on the disk."
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Full path of the file with the file name that needs to be saved."
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Full content of the file that needs to be saved on the disk. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the file that needs to be saved on the disk. This description doesn't need to explain what is being done currently in this task but rather what is the idea behind this file - what do we want to put in this file in the future. Write the description ONLY if this is the first time this file is being saved. If this file already exists on the disk, leave this field empty."
+                }
+              },
+              "required": [
+                "name",
+                "path",
+                "content"
+              ]
+            }
+          }
+        },
+        "required": [
+          "files"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "files": [
+      {
+        "name": "userController.js",
+        "path": "/controllers/userController.js",
+        "content": "// INPUT_REQUIRED {Confirm that this file contains the admin login method and it is implemented correctly.}\nconst bcrypt = require('bcryptjs');\nconst jwt = require('jsonwebtoken');\nconst { validationResult } = require('express-validator');\nconst User = require('../models/User');\n\n// [OLD CODE] Previous controller methods like register and login.\n\nexports.adminLogin = async (req, res) => {\n  const { email, password } = req.body;\n\n  try {\n    let user = await User.findOne({ email });\n    if (!user || user.role !== 'admin') {\n      return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });\n    }\n\n    const isMatch = await bcrypt.compare(password, user.password);\n    if (!isMatch) {\n      return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });\n    }\n\n    const payload = {\n      user: {\n        id: user.id\n      }\n    };\n\n    jwt.sign(\n      payload,\n      process.env.JWT_SECRET,\n      { expiresIn: '1h' },\n      (err, token) => {\n        if (err) throw err;\n        res.json({ token });\n      }\n    );\n  } catch (err) {\n    console.error(err.message);\n    res.status(500).send('Server error');\n  }\n};"
+      },
+      {
+        "name": "auth.js",
+        "path": "/routes/auth.js",
+        "content": "// INPUT_REQUIRED {Confirm that this file has the admin login route and it is set up correctly.}\nconst express = require('express');\nconst { check, validationResult } = require('express-validator');\nconst UserController = require('../controllers/userController');\nconst router = express.Router();\n\n// [OLD CODE] Other auth routes like register and login.\n\nrouter.post('/admin/login', [\n  check('email', 'Please include a valid email').isEmail(),\n  check('password', 'Password is required').exists()\n], UserController.adminLogin);\n\nmodule.exports = router;"
+      },
+      {
+        "name": "server.js",
+        "path": "/server.js",
+        "content": "// INPUT_REQUIRED {Ensure that the server.js file is correctly importing and using the auth routes.}\nconst express = require('express');\nconst http = require('http');\nconst socketIo = require('socket.io');\nconst connectDB = require('./config/db');\nconst passport = require('passport');\nconst cors = require('cors');\n\n// Connect Database\nconnectDB();\n\nconst app = express();\napp.use(cors({ origin: 'http://localhost:3000', credentials: true })); // Enable CORS for routes\nconst server = http.createServer(app);\nconst io = socketIo(server, {\n    cors: {\n        origin: 'http://localhost:3000',\n        credentials: true,\n        methods: ['GET', 'POST']\n    }\n});\n\n// Middleware\napp.use(express.json());\nrequire('./config/auth')(passport);\napp.use(passport.initialize());\nconst authRoutes = require('./routes/auth');\napp.use('/api/users', authRoutes);\n\n// [OLD CODE] The rest of the server setup, including other routes and socket setup.\n\nconst PORT = process.env.PORT || 3001;\n\napp.get('/api/ping', (req, res) => {\n    res.json({ message: 'pong' });\n});\n\nserver.listen(PORT, () => {\n    console.log(`Server running on port ${PORT}`);\n});"
+      }
+    ]
+  }
+}

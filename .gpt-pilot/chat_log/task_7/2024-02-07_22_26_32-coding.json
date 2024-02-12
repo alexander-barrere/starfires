@@ -1,0 +1,64 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "save_files",
+      "description": "Iterates over the files passed to this function and saves them on the disk.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "description": "List of files that need to be saved.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the file that needs to be saved on the disk."
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Full path of the file with the file name that needs to be saved."
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Full content of the file that needs to be saved on the disk. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the file that needs to be saved on the disk. This description doesn't need to explain what is being done currently in this task but rather what is the idea behind this file - what do we want to put in this file in the future. Write the description ONLY if this is the first time this file is being saved. If this file already exists on the disk, leave this field empty."
+                }
+              },
+              "required": [
+                "name",
+                "path",
+                "content"
+              ]
+            }
+          }
+        },
+        "required": [
+          "files"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "files": [
+      {
+        "name": "subscriberRoutes.js",
+        "path": "/routes/subscriberRoutes.js",
+        "content": "const express = require('express');\nconst router = express.Router();\nconst hasRole = require('../middleware/roleAuth');\n\n// INPUT_REQUIRED {Assuming there's a controller function to access subscriber content}\n// Include subscriber-specific routes that require 'subscriber' role to access\nrouter.get('/exclusive-content', hasRole(['subscriber']), (req, res) => {\n  res.json({ message: 'This is exclusive content for subscribers.' });\n});\n\nmodule.exports = router;",
+        "description": "Defines routes that are exclusively accessible to users with the 'subscriber' role, protecting them with role-based access control middleware."
+      },
+      {
+        "name": "productRoutes.js",
+        "path": "/routes/productRoutes.js",
+        "content": "const express = require('express');\nconst { check } = require('express-validator');\nconst productController = require('../controllers/productController');\nconst hasRole = require('../middleware/roleAuth');\nconst router = express.Router();\n\n// Regular user-accessible routes\nrouter.get('/', productController.getProducts);\nrouter.get('/:id', productController.getProductById);\n\n// Admin-accessible routes\nrouter.post('/', [\n  check('title', 'Title is required').not().isEmpty(),\n  check('price', 'Price must be a valid number').isFloat({ gt: 0 })\n], productController.createProduct);\nrouter.put('/:id', [\n  check('title', 'Title is required').not().isEmpty(),\n  check('price', 'Price must be a valid number').isFloat({ gt: 0 })\n], productController.updateProduct);\nrouter.delete('/:id', productController.deleteProduct);\n\n// Subscriber-only product access routes\n// INPUT_REQUIRED {Define routes that are available only for subscribers, for example, a route to access premium products.}\n\nmodule.exports = router;",
+        "description": ""
+      }
+    ]
+  }
+}

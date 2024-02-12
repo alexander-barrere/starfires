@@ -1,0 +1,205 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "parse_development_task",
+      "description": "Breaks down the development task into smaller steps that need to be done to implement the entire task.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "description": "List of smaller development steps that need to be done to complete the entire task.",
+            "items": {
+              "type": "object",
+              "description": "A smaller development step that needs to be done to complete the entire task.  Remember, if you need to run a command that doesn't finish by itself (eg. a command to run an  If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "command",
+                    "code_change",
+                    "human_intervention"
+                  ],
+                  "description": "Type of the development step that needs to be done to complete the entire task."
+                },
+                "command": {
+                  "type": "object",
+                  "description": "Command that needs to be run to complete the current task. This should be used only if the task is of a type \"command\".",
+                  "properties": {
+                    "command": {
+                      "type": "string",
+                      "description": "A single command that needs to be executed."
+                    },
+                    "timeout": {
+                      "type": "number",
+                      "description": "Timeout in milliseconds that represent the approximate time this command takes to finish. If you need to run a command that doesnt't finish by itself (eg. a command to run an app), set the timeout to to a value long enough to determine that it has started successfully and provide a command_id. If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`"
+                    },
+                    "success_message": {
+                      "type": "string",
+                      "description": "A message to look for in the output of the command to determine if successful or not."
+                    },
+                    "command_id": {
+                      "type": "string",
+                      "description": "If the process needs to continue running after the command is executed provide a unique command identifier which you can use to kill the process later."
+                    }
+                  },
+                  "required": [
+                    "command",
+                    "timeout"
+                  ]
+                },
+                "code_change": {
+                  "type": "object",
+                  "description": "A code change that needs to be implemented. This should be used only if the task is of a type \"code_change\".",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the file that needs to be implemented."
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "Full path of the file with the file name that needs to be implemented."
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Full content of the file that needs to be implemented. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "path",
+                    "content"
+                  ]
+                },
+                "human_intervention_description": {
+                  "type": "string",
+                  "description": "Description of a step in debugging this issue when there is a human intervention needed. This should be used only if the task is of a type \"human_intervention\"."
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "tasks"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "tasks": [
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "Course.js",
+          "path": "/models/Course.js",
+          "content": "const mongoose = require('mongoose');\n\nconst CourseSchema = new mongoose.Schema({\n  title: {\n    type: String,\n    required: true\n  },\n  description: {\n    type: String,\n    required: true\n  },\n  content: [{\n      moduleTitle: {\n        type: String,\n        required: true\n      },\n      lessons: [{\n          lessonTitle: {\n            type: String,\n            required: true\n          },\n          material: {\n            type: String\n          }\n        }]\n  }],\n  createdAt: {\n    type: Date,\n    default: Date.now\n  }\n});\n\nmodule.exports = mongoose.model('Course', CourseSchema);\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "UserProgress.js",
+          "path": "/models/UserProgress.js",
+          "content": "const mongoose = require('mongoose');\n\nconst UserProgressSchema = new mongoose.Schema({\n  user: {\n    type: mongoose.Schema.Types.ObjectId,\n    ref: 'User',\n    required: true\n  },\n  course: {\n    type: mongoose.Schema.Types.ObjectId,\n    ref: 'Course',\n    required: true\n  },\n  progress: {\n    type: Map,\n    of: new mongoose.Schema({\n      moduleId: mongoose.Schema.Types.ObjectId,\n      lessonsCompleted: [mongoose.Schema.Types.ObjectId]\n    })\n  },\n  createdAt: {\n    type: Date,\n    default: Date.now\n  },\n  updatedAt: {\n    type: Date,\n    default: Date.now\n  }\n});\n\nmodule.exports = mongoose.model('UserProgress', UserProgressSchema);\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "Assessment.js",
+          "path": "/models/Assessment.js",
+          "content": "const mongoose = require('mongoose');\n\nconst AssessmentSchema = new mongoose.Schema({\n  courseId: {\n    type: mongoose.Schema.Types.ObjectId,\n    ref: 'Course',\n    required: true\n  },\n  questions: [{\n      query: String,\n      options: [String],\n      correctAnswer: Number\n    }],\n  createdAt: {\n    type: Date,\n    default: Date.now\n  }\n});\n\nmodule.exports = mongoose.model('Assessment', AssessmentSchema);\n"
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "pip install pipenv",
+          "timeout": 20000
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "mkdir -p /astrology_service",
+          "timeout": 1000
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "cd /astrology_service && pipenv --python 3.9",
+          "timeout": 10000
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "cd /astrology_service && pipenv install flask",
+          "timeout": 20000
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "compute.py",
+          "path": "/astrology_service/compute.py",
+          "content": "import json\nfrom flask import Flask, request, jsonify\n\napp = Flask(__name__)\n\n@app.route('/compute', methods=['POST'])\ndef compute_astrology_chart():\n    data = request.get_json()\n    result = {'data': data}  # Replace with actual computation logic\n    return jsonify(result)\n\nif __name__ == '__main__':\n    app.run(port=5001)\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "courseController.js",
+          "path": "/controllers/courseController.js",
+          "content": "// All the imports required for the controller\nconst Course = require('../models/Course');\nconst UserProgress = require('../models/UserProgress');\nconst Assessment = require('../models/Assessment');\nconst axios = require('axios');\nconst astrologyServiceUrl = 'http://localhost:5001/compute';\n\n// Define all the controller functions here\n// [OLD CODE] Add previous code for getCourses, getUserProgress, and getAssessmentForCourse functions\n\n// Function to get astrology chart computation\nexports.getAstrologyChart = async (req, res) => {\n  try {\n    const { userData } = req.body;\n    const result = await axios.post(astrologyServiceUrl, userData);\n    res.json(result.data);\n  } catch (err) {\n    console.error(err);\n    res.status(500).send('Server error');\n  }\n};\n\n// [OLD CODE] Insert any additional controller logic that was previously implemented\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "courseRoutes.js",
+          "path": "/routes/courseRoutes.js",
+          "content": "// All the imports required for the routers\nconst express = require('express');\nconst courseController = require('../controllers/courseController');\nconst { check } = require('express-validator');\n\nconst router = express.Router();\n\n// Define the course routes here\nrouter.get('/', courseController.getCourses);\nrouter.get('/progress/:userId/:courseId', courseController.getUserProgress);\nrouter.post('/progress/update', [\n  check('userId', 'userId is required').not().isEmpty(),\n  check('courseId', 'courseId is required').not().isEmpty(),\n], courseController.updateUserProgress);\nrouter.get('/assessments/:courseId', courseController.getAssessmentForCourse);\nrouter.post('/astrology-chart', courseController.getAstrologyChart);\n\nmodule.exports = router;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "CourseListPage.js",
+          "path": "/starfires_v2_frontend/src/pages/CourseListPage.js",
+          "content": "// All the imports required for the page\nimport React, { useState, useEffect } from 'react';\nimport CourseItem from '../components/CourseItem';\nimport axios from '../utils/axiosDefaults';\n\nconst CourseListPage = () => {\n  const [courses, setCourses] = useState([]);\n\n  useEffect(() => {\n    const fetchCourses = async () => {\n      const result = await axios.get('/courses');\n      setCourses(result.data);\n    };\n\n    fetchCourses();\n  }, []);\n\n  return (\n    <div>\n      <h1>Courses</h1>\n      <div>\n        {courses.map(course => (\n          <CourseItem key={course._id} course={course} />\n        ))}\n      </div>\n    </div>\n  );\n};\n\nexport default CourseListPage;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "CourseItem.js",
+          "path": "/starfires_v2_frontend/src/components/CourseItem.js",
+          "content": "// All the imports required for the component\nimport React from 'react';\nimport { Card, Button } from 'react-bootstrap';\n\nconst CourseItem = ({ course }) => {\n  return (\n    <Card>\n      <Card.Body>\n        <Card.Title>{course.title}</Card.Title>\n        <Card.Text>{course.description}</Card.Text>\n        <Button variant='primary' href={`/courses/${course._id}`}>View Course</Button>\n      </Card.Body>\n    </Card>\n  );\n};\n\nexport default CourseItem;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "CoursePage.js",
+          "path": "/starfires_v2_frontend/src/pages/CoursePage.js",
+          "content": "// All the imports required for the page\nimport React, { useState, useEffect } from 'react';\nimport { useParams } from 'react-router-dom';\nimport axios from '../utils/axiosDefaults';\nimport Lesson from '../components/Lesson';\n\nconst CoursePage = () => {\n  const [course, setCourse] = useState(null);\n  const [progress, setProgress] = useState(null);\n  const { courseId } = useParams();\n  const userId = 'userIdFromAuthContext'; // INPUT_REQUIRED {Insert the actual user ID retrieval logic}\n\n  useEffect(() => {\n    const fetchCourseDetails = async () => {\n      const courseResult = await axios.get(`/courses/${courseId}`);\n      const progressResult = await axios.get(`/courses/progress/${userId}/${courseId}`);\n      \n      setCourse(courseResult.data);\n      setProgress(progressResult.data);\n    };\n\n    fetchCourseDetails();\n  }, [courseId, userId]);\n\n  return (\n    <div>\n      {course && (\n        <>\n          <h1>{course.title}</h1>\n          {course.content.map(module => (\n            <div key={module.moduleTitle}>\n              <h2>{module.moduleTitle}</h2>\n              {module.lessons.map(lesson => \n                <Lesson \n                  key={lesson.lessonTitle}\n                  lesson={lesson}\n                  courseId={courseId}\n                  moduleId={module._id}\n                  isCompleted={progress && progress.progress && progress.progress.some(p => p.moduleId === module._id && p.lessonsCompleted.includes(lesson._id))}\n                />\n              )}\n            </div>\n          ))}\n        </>\n      )}\n    </div>\n  );\n};\n\nexport default CoursePage;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "Lesson.js",
+          "path": "/starfires_v2_frontend/src/components/Lesson.js",
+          "content": "// All the imports required for the component\nimport React from 'react';\nimport { Button } from 'react-bootstrap';\nimport axios from '../utils/axiosDefaults';\n\nconst Lesson = ({ lesson, courseId, moduleId, isCompleted }) => {\n  const completeLesson = async () => {\n    await axios.post('/courses/progress/update', {\n      userId: 'userIdFromAuthContext', // INPUT_REQUIRED {Replace with the actual user ID retrieval logic}\n      courseId,\n      moduleId,\n      lessonId: lesson._id\n    });\n    // Trigger the UI to reflect the lesson completion\n  };\n\n  return (\n    <div className={`lesson ${isCompleted ? 'completed' : ''}`}>\n      <h3>{lesson.lessonTitle}</h3>\n      <Button onClick={completeLesson} disabled={isCompleted}>\n        Mark as Completed\n      </Button>\n    </div>\n  );\n};\n\nexport default Lesson;\n"
+        }
+      }
+    ]
+  }
+}

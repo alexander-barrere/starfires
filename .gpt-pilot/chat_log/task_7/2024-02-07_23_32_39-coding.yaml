@@ -1,0 +1,168 @@
+endpoint: OPENAI
+model: gpt-4-1106-preview
+messages:
+- role: system
+  content: You are a full stack software developer who works in a software development agency. You write very modular and
+    clean code. Your job is to implement tasks that your tech lead assigns you. Each task has a description of what needs
+    to be implemented, a programmatic goal that will determine if a task can be marked as done and user-review goal that will
+    determine if a task is done or not but from a user perspective since it will be reviewed by a human.
+- role: user
+  content: 'Here is how the file `./README.md/` looks like right now:
+
+    ```
+
+
+    ```
+
+
+    And here is the new implementation for the same file:
+
+    ```
+
+    # starfires_v2
+
+    Astrological Website Platform
+
+
+    ## Project Overview
+
+
+    "starfires_v2" is a comprehensive astrology website designed to engage users in astrology through interactive features
+    and quality content. The platform includes a variety of services:
+
+
+    - Live event participation with real-time video streaming
+
+    - A digital storefront for astrology-related books
+
+    - An informative blog managed by a single admin
+
+    - Mastery courses with progress tracking and assessments
+
+
+    ### Technology Stack
+
+    - Frontend: React, Bootstrap, D3.js
+
+    - Backend: Node.js, Express
+
+    - Authentication: OAuth, JWT, Passport
+
+    - Real-time Communication: Socket.IO
+
+    - Database: MongoDB with Mongoose ODM
+
+    - Additional Libraries/Tools: axios, cronjob, dotenv, bcryptjs
+
+
+    ### Main Features
+
+    - Natal chart calculations
+
+    - Transit forecasts
+
+    - Synastry & compatibility reports
+
+    - Progression charts
+
+    - Electional astrology
+
+    - Horary astrology
+
+    - Event matching based on astrological data
+
+
+    ### UI/UX Design
+
+    The application employs a responsive design using Bootstrap framework to ensure that it is accessible on various devices.
+
+
+    ### API Documentation
+
+    APIs are documented using Swagger to provide clear guidelines for integration.
+
+
+    ## Installation
+
+
+    [OLD CODE] Installation instructions from previous README file.
+
+
+    ## Usage
+
+
+    [OLD CODE] Usage instructions from the previous README file.
+
+
+    ## Deployment
+
+
+    The application is container-ready and can be deployed to any cloud hosting service supporting the Node.js runtime.
+
+
+    ### Contributing
+
+
+    We welcome contributions from the community. To contribute, please follow the guidelines outlined in CONTRIBUTING.md.
+
+
+    ## License
+
+
+    Licensed under the ISC license. See the LICENSE file for details.
+
+
+    ## Development Team
+
+
+    [OLD CODE] Team member details.
+
+
+    ## Contact
+
+
+    For support or inquiries, please email us at sirius@starfires.com.
+
+    ```
+
+
+    Now, implement the new changes into the previously implemented file and return the entirely coded file. Do not add any
+    lines of code that are not in the previously coded file or the new implementation but only combine those two.
+
+
+    **IMPORTANT**
+
+    All lines of code in the new implementation should be present. From the old implementation, only take the ones that are
+    replaced with the comment `[OLD CODE]` in the new implementation
+
+
+    **IMPORTANT**
+
+    Make sure that you respond with all lines of code that are replaced by these comments, including all control structures,
+    error handling, and any other relevant logic that was in the original code.
+
+    Under no circumstances should you ever leave any part of the code snippet unwritten. Every single line of code that exists
+    in the place where the comment lives right now should be replaced. Do not include any code that is above or below the
+    comment but only the code that should be in the position of the comment.'
+- role: user
+  content: "**IMPORTANT**\nYou must respond with ONLY the JSON object, with NO additional text or explanation.\n\nHere is\
+    \ the schema for the expected JSON object:\n```json\n{\n    \"file_content\": {\n        \"type\": \"string\",\n     \
+    \   \"description\": \"Fully coded file. This contains only the lines of code and no other text.\"\n    }\n}\n```\n\n"
+response: "```json\n{\n    \"file_content\": \"# starfires_v2\\nAstrological Website Platform\\n\\n## Project Overview\\n\\\
+  n\\\"starfires_v2\\\" is a comprehensive astrology website designed to engage users in astrology through interactive features\
+  \ and quality content. The platform includes a variety of services:\\n\\n- Live event participation with real-time video\
+  \ streaming\\n- A digital storefront for astrology-related books\\n- An informative blog managed by a single admin\\n- Mastery\
+  \ courses with progress tracking and assessments\\n\\n### Technology Stack\\n- Frontend: React, Bootstrap, D3.js\\n- Backend:\
+  \ Node.js, Express\\n- Authentication: OAuth, JWT, Passport\\n- Real-time Communication: Socket.IO\\n- Database: MongoDB\
+  \ with Mongoose ODM\\n- Additional Libraries/Tools: axios, cronjob, dotenv, bcryptjs\\n\\n### Main Features\\n- Natal chart\
+  \ calculations\\n- Transit forecasts\\n- Synastry & compatibility reports\\n- Progression charts\\n- Electional astrology\\\
+  n- Horary astrology\\n- Event matching based on astrological data\\n\\n### UI/UX Design\\nThe application employs a responsive\
+  \ design using Bootstrap framework to ensure that it is accessible on various devices.\\n\\n### API Documentation\\nAPIs\
+  \ are documented using Swagger to provide clear guidelines for integration.\\n\\n## Installation\\n\\nTo install the necessary\
+  \ packages, run the following command:\\n```bash\\nnpm install\\n```\\n## Usage\\n\\nTo start the server, run:\\n```bash\\\
+  nnpm start\\n```\\n\\n## Deployment\\n\\nThe application is container-ready and can be deployed to any cloud hosting service\
+  \ supporting the Node.js runtime.\\n\\n### Contributing\\n\\nWe welcome contributions from the community. To contribute,\
+  \ please follow the guidelines outlined in CONTRIBUTING.md.\\n\\n## License\\n\\nLicensed under the ISC license. See the\
+  \ LICENSE file for details.\\n\\n## Development Team\\n\\n- Alex Johnson - Lead Developer\\n- Samantha Bloom - Frontend\
+  \ Developer\\n- Marcus Chan - Backend Developer\\n- Li Wei - UX/UI Designer\\n- Raj Patel - DevOps\\n\\n## Contact\\n\\\
+  nFor support or inquiries, please email us at sirius@starfires.com.\\n\"\n}\n```"

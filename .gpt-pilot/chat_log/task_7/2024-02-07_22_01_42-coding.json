@@ -1,0 +1,25 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "get_fully_coded_file",
+      "description": "Gets the fully coded file.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "file_content": {
+            "type": "string",
+            "description": "Fully coded file. This contains only the lines of code and no other text."
+          }
+        },
+        "required": [
+          "file_content"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "file_content": "import React, { useState } from 'react';\nimport { Container, Form, Button } from 'react-bootstrap';\nimport axios from '../utils/axiosDefaults';\nimport { useNavigate } from 'react-router-dom';\n\nconst LoginPage = () => {\n    const [email, setEmail] = useState('');\n    const [password, setPassword] = useState('');\n    const navigate = useNavigate();\n\n    const handleSubmit = async (event) => {\n        event.preventDefault();\n        try {\n            const response = await axios.post('/users/login', { email, password });\n            localStorage.setItem('token', response.data.token);\n            navigate('/');\n        } catch (error) {\n            console.error(error.response.data);\n            alert(error.response.data.errors[0].msg); // Show login error to the user\n        }\n    };\n\n    return (\n        <Container>\n            <h1>Login</h1>\n            <Form onSubmit={handleSubmit}>\n                <Form.Group className=\"mb-3\" controlId=\"formBasicEmail\">\n                    <Form.Label>Email address</Form.Label>\n                    <Form.Control type=\"email\" placeholder=\"Enter email\" value={email} onChange={(e) => setEmail(e.target.value)} required />\n                    <Form.Text className=\"text-muted\">\n                        We'll never share your email with anyone else.\n                    </Form.Text>\n                </Form.Group>\n\n                <Form.Group className=\"mb-3\" controlId=\"formBasicPassword\">\n                    <Form.Label>Password</Form.Label>\n                    <Form.Control type=\"password\" placeholder=\"Password\" value={password} onChange={(e) => setPassword(e.target.value)} required />\n                </Form.Group>\n\n                <Button variant=\"primary\" type=\"submit\">\n                    Login\n                </Button>\n            </Form>\n        </Container>\n    );\n};\n\nexport default LoginPage;\n"
+  }
+}

@@ -1,0 +1,159 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "parse_development_task",
+      "description": "Breaks down the development task into smaller steps that need to be done to implement the entire task.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "description": "List of smaller development steps that need to be done to complete the entire task.",
+            "items": {
+              "type": "object",
+              "description": "A smaller development step that needs to be done to complete the entire task.  Remember, if you need to run a command that doesn't finish by itself (eg. a command to run an  If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "command",
+                    "code_change",
+                    "human_intervention"
+                  ],
+                  "description": "Type of the development step that needs to be done to complete the entire task."
+                },
+                "command": {
+                  "type": "object",
+                  "description": "Command that needs to be run to complete the current task. This should be used only if the task is of a type \"command\".",
+                  "properties": {
+                    "command": {
+                      "type": "string",
+                      "description": "A single command that needs to be executed."
+                    },
+                    "timeout": {
+                      "type": "number",
+                      "description": "Timeout in milliseconds that represent the approximate time this command takes to finish. If you need to run a command that doesnt't finish by itself (eg. a command to run an app), set the timeout to to a value long enough to determine that it has started successfully and provide a command_id. If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`"
+                    },
+                    "success_message": {
+                      "type": "string",
+                      "description": "A message to look for in the output of the command to determine if successful or not."
+                    },
+                    "command_id": {
+                      "type": "string",
+                      "description": "If the process needs to continue running after the command is executed provide a unique command identifier which you can use to kill the process later."
+                    }
+                  },
+                  "required": [
+                    "command",
+                    "timeout"
+                  ]
+                },
+                "code_change": {
+                  "type": "object",
+                  "description": "A code change that needs to be implemented. This should be used only if the task is of a type \"code_change\".",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the file that needs to be implemented."
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "Full path of the file with the file name that needs to be implemented."
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Full content of the file that needs to be implemented. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "path",
+                    "content"
+                  ]
+                },
+                "human_intervention_description": {
+                  "type": "string",
+                  "description": "Description of a step in debugging this issue when there is a human intervention needed. This should be used only if the task is of a type \"human_intervention\"."
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "tasks"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "tasks": [
+      {
+        "type": "command",
+        "command": {
+          "command": "npm install socket.io",
+          "timeout": 60000
+        }
+      },
+      {
+        "type": "command",
+        "command": {
+          "command": "cd starfires_v2_frontend && npm install socket.io-client",
+          "timeout": 60000
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "server.js",
+          "path": "/server.js",
+          "content": "const express = require('express');\nconst http = require('http');\nconst socketIo = require('socket.io');\nconst connectDB = require('./config/db');\nconst User = require('./models/User');\nconst passport = require('passport');\n\n// Connect Database\nconnectDB();\n\nconst app = express();\nconst server = http.createServer(app);\nconst io = socketIo(server, {\n    cors: {\n        origin: '*',\n        methods: ['GET', 'POST']\n    }\n});\n\n// Middleware\napp.use(bodyParser.json());\nrequire('./config/auth')(passport);\napp.use(passport.initialize());\nconst authRoutes = require('./routes/auth');\napp.use('/api/users', authRoutes);\n\n// Include setup function for socket event listeners\nrequire('./sockets')(io);\n\nconst PORT = process.env.PORT || 3001;\n\napp.get('/api/ping', (req, res) => {\n  res.json({ message: 'pong' });\n});\n\nserver.listen(PORT, () => {\n    console.log(`Server running on port ${PORT}`);\n});\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "streamSocket.js",
+          "path": "/sockets/streamSocket.js",
+          "content": "module.exports = (io, socket) => {\n    socket.on('join-stream', (room) => {\n        socket.join(room);\n    });\n\n    socket.on('stream', (data) => {\n        socket.to(data.room).emit('stream', data.stream);\n    });\n}\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "index.js",
+          "path": "/sockets/index.js",
+          "content": "const streamSocket = require('./streamSocket');\n\nmodule.exports = (io) => {\n  io.on('connection', (socket) => {\n      console.log(`New client connected: ${socket.id}`);\n\n      // Attach event handlers:\n      streamSocket(io, socket);\n\n      socket.on('disconnect', () => {\n          console.log(`Client disconnected: ${socket.id}`);\n      });\n  });\n}\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "socket.js",
+          "path": "/starfires_v2_frontend/src/utils/socket.js",
+          "content": "import io from 'socket.io-client';\n\nexport const socket = io('http://localhost:3001'); // INPUT_REQUIRED {Specify the correct server URL, especially in production}\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "LiveStream.js",
+          "path": "/starfires_v2_frontend/src/components/LiveStream.js",
+          "content": "import React, { useEffect } from 'react';\nimport { socket } from '../utils/socket';\n\nconst LiveStream = () => {\n    useEffect(() => {\n        navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {\n            const videoElement = document.querySelector('#videoStream');\n            videoElement.srcObject = stream;\n\n            socket.emit('join-stream', 'global-room'); // INPUT_REQUIRED {Replace with actual room id or logic for room joining}\n            socket.emit('stream', { room: 'global-room', stream: stream }); // INPUT_REQUIRED {Implement functionality to handle the video stream correctly}\n\n            socket.on('stream', (incomingStream) => {\n                // HANDLE_INCOMING_STREAM {} Implement logic to render incoming video stream\n            });\n        });\n\n        return () => {\n            socket.off('stream');\n        };\n    }, []);\n\n    return (\n        <div>\n            <video id=\"videoStream\" autoPlay playsInline></video>\n        </div>\n    );\n};\n\nexport default LiveStream;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "Home.js",
+          "path": "/starfires_v2_frontend/src/pages/Home.js",
+          "content": "import React from 'react';\nimport { Container, Row, Col, Button, Card } from 'react-bootstrap';\nimport LiveStream from '../components/LiveStream';\n\nconst Home = () => {\n  return (\n    <Container>\n      <Row className=\"justify-content-md-center mt-5\">\n        <Col md={8}>\n          <h1>Welcome to Starfires</h1>\n          <p className=\"lead\">Explore the mysteries of the stars and unlock the secrets of your zodiac.</p>\n        </Col>\n      </Row>\n\n      <Row className=\"my-4\">\n        <Col md={4}>\n          {/* Other Card components */}\n          <LiveStream />\n        </Col>\n      </Row>\n\n      {/* Rest of the homepage content */}\n      {/* INPUT_REQUIRED {Place other content and components as needed} */}\n    </Container>\n  );\n};\n\nexport default Home;\n"
+        }
+      }
+    ]
+  }
+}

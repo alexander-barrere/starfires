@@ -13,6 +13,5 @@ router.post('/progress/update', [
   check('courseId', 'courseId is required').not().isEmpty(),
 ], courseController.updateUserProgress);
 router.get('/assessments/:courseId', courseController.getAssessmentForCourse);
-router.post('/astrology-chart', courseController.getAstrologyChart);
 
 module.exports = router;

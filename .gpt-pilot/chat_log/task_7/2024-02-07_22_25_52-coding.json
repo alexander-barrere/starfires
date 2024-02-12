@@ -1,0 +1,58 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "save_files",
+      "description": "Iterates over the files passed to this function and saves them on the disk.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "description": "List of files that need to be saved.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the file that needs to be saved on the disk."
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Full path of the file with the file name that needs to be saved."
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Full content of the file that needs to be saved on the disk. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the file that needs to be saved on the disk. This description doesn't need to explain what is being done currently in this task but rather what is the idea behind this file - what do we want to put in this file in the future. Write the description ONLY if this is the first time this file is being saved. If this file already exists on the disk, leave this field empty."
+                }
+              },
+              "required": [
+                "name",
+                "path",
+                "content"
+              ]
+            }
+          }
+        },
+        "required": [
+          "files"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "files": [
+      {
+        "name": "roleAuth.js",
+        "path": "/middleware/roleAuth.js",
+        "content": "const passport = require('passport');\n\nconst roleAuth = (roles) => [\n  passport.authenticate('jwt', { session: false }),\n  (req, res, next) => {\n    if (roles.includes(req.user.role)) {\n      return next();\n    }\n    return res.status(403).json({ message: 'Access denied.' });\n  }\n];\n\nmodule.exports = roleAuth;\n",
+        "description": "This middleware checks if the authenticated user's role is included in the array of allowed roles and grants access accordingly. It uses passport to authenticate the JWT token and then checks the user's role against the specified roles for the route. If the user has an allowed role, the request is passed along; otherwise, a 403 status is sent back."
+      }
+    ]
+  }
+}

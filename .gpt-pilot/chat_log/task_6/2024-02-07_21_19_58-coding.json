@@ -1,0 +1,57 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "save_files",
+      "description": "Iterates over the files passed to this function and saves them on the disk.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": "array",
+            "description": "List of files that need to be saved.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Name of the file that needs to be saved on the disk."
+                },
+                "path": {
+                  "type": "string",
+                  "description": "Full path of the file with the file name that needs to be saved."
+                },
+                "content": {
+                  "type": "string",
+                  "description": "Full content of the file that needs to be saved on the disk. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                },
+                "description": {
+                  "type": "string",
+                  "description": "Description of the file that needs to be saved on the disk. This description doesn't need to explain what is being done currently in this task but rather what is the idea behind this file - what do we want to put in this file in the future. Write the description ONLY if this is the first time this file is being saved. If this file already exists on the disk, leave this field empty."
+                }
+              },
+              "required": [
+                "name",
+                "path",
+                "content"
+              ]
+            }
+          }
+        },
+        "required": [
+          "files"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "files": [
+      {
+        "name": "Treasures.js",
+        "path": "/starfires_v2_frontend/src/pages/Treasures.js",
+        "content": "import React, { useState, useEffect } from 'react';\nimport { Container, Row, Col, Card, Button } from 'react-bootstrap';\nimport axios from 'axios';\nimport { useNavigate } from 'react-router-dom';\n\nconst Treasures = () => {\n    const [products, setProducts] = useState([]);\n    const navigate = useNavigate();\n\n    useEffect(() => {\n        // Fetch products from the backend\n        const fetchProducts = async () => {\n            try {\n                const response = await axios.get('REPLACE_WITH_BACKEND_URL/api/products'); // INPUT_REQUIRED {Replace REPLACE_WITH_BACKEND_URL with the actual backend URL, if different from http://localhost:3001}\n                console.log(response.data); // Use the React DevTools to check if the products state updates with this logged data\n                setProducts(response.data);\n            } catch (error) {\n                console.error('Error fetching products:', error);\n            }\n        };\n        fetchProducts();\n    }, []);\n\n    const handleAddToCart = (productId) => {\n        // Invoke addToCart logic here\n        navigate('/cart');\n    };\n\n    return (\n        <Container>\n            <Row className=\"justify-content-md-center mt-5\">\n                <Col md={8}>\n                    <h1>Astrology Treasures</h1>\n                    <p>Discover a curated selection of astrology books.</p>\n                </Col>\n            </Row>\n            <Row>\n                {products.map(product => (\n                    <Col md={4} key={product._id}>\n                        <Card>\n                            <Card.Img variant=\"top\" src={product.imageUrl || \"/images/eBook1.jpg\"} />\n                            <Card.Body>\n                                <Card.Title>{product.title}</Card.Title>\n                                <Card.Text>{product.description}</Card.Text>\n                                <Button variant=\"primary\" onClick={() => handleAddToCart(product._id)}>Add to Cart</Button>\n                            </Card.Body>\n                        </Card>\n                    </Col>\n                ))}\n            </Row>\n        </Container>\n    );\n};\n\nexport default Treasures;\n"
+      }
+    ]
+  }
+}

@@ -1,0 +1,137 @@
+{
+  "endpoint": "OPENAI",
+  "model": "gpt-4-1106-preview",
+  "functions": [
+    {
+      "name": "parse_development_task",
+      "description": "Breaks down the development task into smaller steps that need to be done to implement the entire task.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "tasks": {
+            "type": "array",
+            "description": "List of smaller development steps that need to be done to complete the entire task.",
+            "items": {
+              "type": "object",
+              "description": "A smaller development step that needs to be done to complete the entire task.  Remember, if you need to run a command that doesn't finish by itself (eg. a command to run an  If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "command",
+                    "code_change",
+                    "human_intervention"
+                  ],
+                  "description": "Type of the development step that needs to be done to complete the entire task."
+                },
+                "command": {
+                  "type": "object",
+                  "description": "Command that needs to be run to complete the current task. This should be used only if the task is of a type \"command\".",
+                  "properties": {
+                    "command": {
+                      "type": "string",
+                      "description": "A single command that needs to be executed."
+                    },
+                    "timeout": {
+                      "type": "number",
+                      "description": "Timeout in milliseconds that represent the approximate time this command takes to finish. If you need to run a command that doesnt't finish by itself (eg. a command to run an app), set the timeout to to a value long enough to determine that it has started successfully and provide a command_id. If you need to create a directory that doesn't exist and is not the root project directory, always create it by running a command `mkdir`"
+                    },
+                    "success_message": {
+                      "type": "string",
+                      "description": "A message to look for in the output of the command to determine if successful or not."
+                    },
+                    "command_id": {
+                      "type": "string",
+                      "description": "If the process needs to continue running after the command is executed provide a unique command identifier which you can use to kill the process later."
+                    }
+                  },
+                  "required": [
+                    "command",
+                    "timeout"
+                  ]
+                },
+                "code_change": {
+                  "type": "object",
+                  "description": "A code change that needs to be implemented. This should be used only if the task is of a type \"code_change\".",
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Name of the file that needs to be implemented."
+                    },
+                    "path": {
+                      "type": "string",
+                      "description": "Full path of the file with the file name that needs to be implemented."
+                    },
+                    "content": {
+                      "type": "string",
+                      "description": "Full content of the file that needs to be implemented. **IMPORTANT**When you want to add a comment that tells the user to add the previous implementation at that place, make sure that the comment starts with `[OLD CODE]` and add a description of what old code should be inserted here. For example, `[OLD CODE] Login route`."
+                    }
+                  },
+                  "required": [
+                    "name",
+                    "path",
+                    "content"
+                  ]
+                },
+                "human_intervention_description": {
+                  "type": "string",
+                  "description": "Description of a step in debugging this issue when there is a human intervention needed. This should be used only if the task is of a type \"human_intervention\"."
+                }
+              },
+              "required": [
+                "type"
+              ]
+            }
+          }
+        },
+        "required": [
+          "tasks"
+        ]
+      }
+    }
+  ],
+  "response": {
+    "tasks": [
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "CartPage.js",
+          "path": "starfires_v2_frontend/src/pages/CartPage.js",
+          "content": "import React from 'react';\nimport Cart from '../components/Cart';\n\nconst CartPage = () => {\n  return (\n    <div>\n      <Cart />\n    </div>\n  );\n};\n\nexport default CartPage;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "App.js",
+          "path": "starfires_v2_frontend/src/App.js",
+          "content": "import React from 'react';\nimport { BrowserRouter as Router, Route, Routes } from 'react-router-dom';\nimport NavigationBar from './components/NavigationBar';\nimport Footer from './components/Footer';\nimport Home from './pages/Home';\n// [OLD CODE] Import all previously imported pages here\nimport CartPage from './pages/CartPage';  // Import the new CartPage component\n\nfunction App() {\n  return (\n    <Router>\n      <div className=\"App\">\n        <NavigationBar />\n        <Routes>\n          {/* [OLD CODE] Define additional routes here */}\n          <Route path=\"/cart\" element={<CartPage />} />  {/* Add this new route */}\n        </Routes>\n        <Footer />\n      </div>\n    </Router>\n  );\n}\n\nexport default App;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "Cart.js",
+          "path": "starfires_v2_frontend/src/components/Cart.js",
+          "content": "import React, { useState, useEffect } from 'react';\nimport CartItem from './CartItem';\nimport axios from 'axios';\n\nconst Cart = () => {\n  const [cartItems, setCartItems] = useState([]);\n  \n  useEffect(() => {\n    // Ideally should retrieve the cart items from the server or local storage\n    let savedCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];\n    setCartItems(savedCartItems);\n  }, []);\n\n  useEffect(() => {\n    // Update local storage whenever the cart items change\n    localStorage.setItem('cartItems', JSON.stringify(cartItems));\n  }, [cartItems]);\n\n  // [OLD CODE] Rest of the code remains the same\n};\n\nexport default Cart;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "Treasures.js",
+          "path": "starfires_v2_frontend/src/pages/Treasures.js",
+          "content": "import React, { useState, useEffect } from 'react';\nimport { Container, Row, Col, Card, Button } from 'react-bootstrap';\nimport axios from 'axios';\nimport { useNavigate } from 'react-router-dom'; // Import the useNavigate hook\n\nconst Treasures = () => {\n    const [products, setProducts] = useState([]);\n    const navigate = useNavigate(); // Initialize the navigate hook\n\n    useEffect(() => {\n        // Fetch products from the backend\n        // [OLD CODE] Existing useEffect for fetching products\n    }, []);\n\n    const handleAddToCart = (productId) => {\n        // [OLD CODE] Invoke addToCart logic here\n        navigate('/cart'); // Navigate to cart page after adding to cart\n    };\n\n    return (\n        <Container>\n            <Row className=\"justify-content-md-center mt-5\">\n                <Col md={8}>\n                    <h1>Astrology Treasures</h1>\n                    <p>Discover a curated selection of astrology books.</p>\n                </Col>\n            </Row>\n            <Row>\n                {products.map(product => (\n                    <Col md={4} key={product._id}>\n                        <Card>\n                            <Card.Img variant=\"top\" src={product.imageUrl || \"/images/eBook1.jpg\"} />\n                            <Card.Body>\n                                <Card.Title>{product.title}</Card.Title>\n                                <Card.Text>{product.description}</Card.Text>\n                                <Button variant=\"primary\" onClick={() => handleAddToCart(product._id)}>Add to Cart</Button>\n                            </Card.Body>\n                        </Card>\n                    </Col>\n                ))}\n            </Row>\n        </Container>\n    );\n};\n\nexport default Treasures;\n"
+        }
+      },
+      {
+        "type": "code_change",
+        "code_change": {
+          "name": "NavigationBar.js",
+          "path": "starfires_v2_frontend/src/components/NavigationBar.js",
+          "content": "import React from 'react';\nimport { Navbar, Nav } from 'react-bootstrap';\nimport { Link } from 'react-router-dom';\n\nconst NavigationBar = () => {\n  return (\n    <Navbar bg=\"dark\" variant=\"dark\" expand=\"lg\" sticky=\"top\" className=\"navbar-custom\">\n      <Link to=\"/\" className=\"navbar-brand\">Starfires V2</Link>\n      <Navbar.Toggle aria-controls=\"basic-navbar-nav\" />\n      <Navbar.Collapse id=\"basic-navbar-nav\">\n        <Nav className=\"ml-auto\">\n          {/* [OLD CODE] existing links ... */}\n          <Nav.Item>\n            <Link to=\"/cart\" className=\"nav-link\">Cart</Link>{/* Add this new link */}\n          </Nav.Item>\n        </Nav>\n      </Navbar.Collapse>\n    </Navbar>\n  );\n};\n\nexport default NavigationBar;\n"
+        }
+      }
+    ]
+  }
+}

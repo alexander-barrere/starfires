@@ -1,0 +1,50 @@
+endpoint: OPENAI
+model: gpt-4-1106-preview
+messages:
+- role: system
+  content: You are a full stack software developer who works in a software development agency. You write very modular and
+    clean code. Your job is to implement tasks that your tech lead assigns you. Each task has a description of what needs
+    to be implemented, a programmatic goal that will determine if a task can be marked as done and user-review goal that will
+    determine if a task is done or not but from a user perspective since it will be reviewed by a human.
+- role: user
+  content: "Here is how the file `routes/auth.js` looks like right now:\n```\nconst express = require('express');\nconst {\
+    \ check, validationResult } = require('express-validator');\nconst UserController = require('../controllers/userController');\n\
+    const router = express.Router();\n\nrouter.post('/register', [\n  check('username', 'Username is required').not().isEmpty(),\n\
+    \  check('email', 'Please include a valid email').isEmail(),\n  check('password', 'Please enter a password with 6 or more\
+    \ characters').isLength({ min: 6 })\n], UserController.register);\n\nrouter.post('/login', [\n  check('email', 'Please\
+    \ include a valid email').isEmail(),\n  check('password', 'Password is required').exists()\n], UserController.login);\n\
+    \n// Add admin login route\nrouter.post('/admin/login', [\n  check('email', 'Please include a valid email').isEmail(),\n\
+    \  check('password', 'Password is required').exists()\n], UserController.adminLogin);\n\nmodule.exports = router;\n\n\
+    ```\n\nAnd here is the new implementation for the same file:\n```\nconst express = require('express');\nconst { check,\
+    \ validationResult } = require('express-validator');\nconst UserController = require('../controllers/userController');\n\
+    const router = express.Router();\n\nrouter.post('/register', [\n  check('username', 'Username is required').not().isEmpty(),\n\
+    \  check('email', 'Please include a valid email').isEmail(),\n  check('password', 'Please enter a password with 6 or more\
+    \ characters').isLength({ min: 6 }),\n  check('birthDate', 'Birth date is required').not().isEmpty(), \n  check('birthTime',\
+    \ 'Birth time is required').not().isEmpty(),\n  check('birthLatitude', 'Birth latitude is required and must be a number').isFloat({\
+    \ min: -90, max: 90 }),\n  check('birthLongitude', 'Birth longitude is required and must be a number').isFloat({ min:\
+    \ -180, max: 180 })\n], UserController.register);\n\nrouter.post('/login', [\n  [OLD CODE] login route validations\n],\
+    \ UserController.login);\n\nrouter.post('/admin/login', [\n  [OLD CODE] admin login route validations\n], UserController.adminLogin);\n\
+    \nmodule.exports = router;\n\n```\n\nNow, implement the new changes into the previously implemented file and return the\
+    \ entirely coded file. Do not add any lines of code that are not in the previously coded file or the new implementation\
+    \ but only combine those two.\n\n**IMPORTANT**\nAll lines of code in the new implementation should be present. From the\
+    \ old implementation, only take the ones that are replaced with the comment `[OLD CODE]` in the new implementation\n\n\
+    **IMPORTANT**\nMake sure that you respond with all lines of code that are replaced by these comments, including all control\
+    \ structures, error handling, and any other relevant logic that was in the original code.\nUnder no circumstances should\
+    \ you ever leave any part of the code snippet unwritten. Every single line of code that exists in the place where the\
+    \ comment lives right now should be replaced. Do not include any code that is above or below the comment but only the\
+    \ code that should be in the position of the comment."
+- role: user
+  content: "**IMPORTANT**\nYou must respond with ONLY the JSON object, with NO additional text or explanation.\n\nHere is\
+    \ the schema for the expected JSON object:\n```json\n{\n    \"file_content\": {\n        \"type\": \"string\",\n     \
+    \   \"description\": \"Fully coded file. This contains only the lines of code and no other text.\"\n    }\n}\n```\n\n"
+response: "```json\n{\n    \"file_content\": \"const express = require('express');\\nconst { check, validationResult } = require('express-validator');\\\
+  nconst UserController = require('../controllers/userController');\\nconst router = express.Router();\\n\\nrouter.post('/register',\
+  \ [\\n  check('username', 'Username is required').not().isEmpty(),\\n  check('email', 'Please include a valid email').isEmail(),\\\
+  n  check('password', 'Please enter a password with 6 or more characters').isLength({ min: 6 }),\\n  check('birthDate', 'Birth\
+  \ date is required').not().isEmpty(), \\n  check('birthTime', 'Birth time is required').not().isEmpty(),\\n  check('birthLatitude',\
+  \ 'Birth latitude is required and must be a number').isFloat({ min: -90, max: 90 }),\\n  check('birthLongitude', 'Birth\
+  \ longitude is required and must be a number').isFloat({ min: -180, max: 180 })\\n], UserController.register);\\n\\nrouter.post('/login',\
+  \ [\\n  check('email', 'Please include a valid email').isEmail(),\\n  check('password', 'Password is required').exists()\\\
+  n], UserController.login);\\n\\nrouter.post('/admin/login', [\\n  check('email', 'Please include a valid email').isEmail(),\\\
+  n  check('password', 'Password is required').exists()\\n], UserController.adminLogin);\\n\\nmodule.exports = router;\\n\"\
+  \n}\n```"
