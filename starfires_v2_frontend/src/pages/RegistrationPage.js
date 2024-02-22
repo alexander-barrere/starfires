@@ -4,13 +4,16 @@ import axios from '../utils/axiosDefaults';
 import { useNavigate } from 'react-router-dom';
 
 const RegistrationPage = () => {
+    const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [birthTime, setBirthTime] = useState('');
-    const [birthLatitude, setBirthLatitude] = useState('');
-    const [birthLongitude, setBirthLongitude] = useState('');
+    const [city, setCity] = useState('');
+    const [state, setState] = useState(''); // Consider renaming to avoid confusion with React state
+    const [country, setCountry] = useState('');
+
     const navigate = useNavigate();
 
     const handleRegistration = async (event) => {
@@ -22,23 +25,35 @@ const RegistrationPage = () => {
                 username,
                 email,
                 password,
+                name,
                 birthDate: formattedBirthDate,
                 birthTime,
-                birthLatitude,
-                birthLongitude
+                city,
+                state,
+                country,
             });
 
             navigate('/login'); // Redirect to login page upon successful registration
         } catch (error) {
             console.error(error.response.data);
-            alert(error.response.data.errors[0].msg); // Show registration error to the user
-        }
+            if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.length > 0) {
+                alert(error.response.data.errors[0].msg); // Show registration error to the user
+            } else {
+                alert("An unexpected error occurred."); // Fallback error message
+            }
+        }        
     };
 
     return (
         <Container>
             <h1>Register</h1>
             <Form onSubmit={handleRegistration}>
+
+                <Form.Group className="mb-3" controlId="formBasicName">
+                    <Form.Label>Name</Form.Label>
+                    <Form.Control type="text" placeholder="Enter name" value={name} onChange={(e) => setName(e.target.value)} required />
+                </Form.Group>
+
                 <Form.Group className="mb-3" controlId="formBasicUsername">
                     <Form.Label>Username</Form.Label>
                     <Form.Control type="text" placeholder="Enter username" value={username} onChange={(e) => setUsername(e.target.value)} required />
@@ -67,14 +82,19 @@ const RegistrationPage = () => {
                     <Form.Control type="time" placeholder="Enter birth time" value={birthTime} onChange={(e) => setBirthTime(e.target.value)} required />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formBasicBirthLatitude">
-                    <Form.Label>Birth Latitude</Form.Label>
-                    <Form.Control type="number" step="0.000001" placeholder="Enter birth latitude" value={birthLatitude} onChange={(e) => setBirthLatitude(e.target.value)} required />
+                <Form.Group className="mb-3" controlId="formBasicCity">
+                    <Form.Label>City</Form.Label>
+                    <Form.Control type="text" placeholder="Enter city" value={city} onChange={(e) => setCity(e.target.value)} required />
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="formBasicBirthLongitude">
-                    <Form.Label>Birth Longitude</Form.Label>
-                    <Form.Control type="number" step="0.000001" placeholder="Enter birth longitude" value={birthLongitude} onChange={(e) => setBirthLongitude(e.target.value)} required />
+                <Form.Group className="mb-3" controlId="formBasicState">
+                    <Form.Label>State</Form.Label>
+                    <Form.Control type="text" placeholder="Enter state" value={state} onChange={(e) => setState(e.target.value)} required />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicCountry">
+                    <Form.Label>Country</Form.Label>
+                    <Form.Control type="text" placeholder="Enter country" value={country} onChange={(e) => setCountry(e.target.value)} required />
                 </Form.Group>
 
                 <Button variant="primary" type="submit">

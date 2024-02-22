@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const astrologyController = require('../controllers/astrologyController');
+const { generateAstrologicalReport } = require('../controllers/astrologyController');
+const passport = require('passport');
 
-router.post('/astrology-charts', astrologyController.getAstrologyChart);
+router.post('/generate-report', passport.authenticate('jwt', { session: false }), generateAstrologicalReport);
 
 module.exports = router;

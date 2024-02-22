@@ -196,3 +196,22 @@ h1 {
         margin-top: 1rem;
     }
 }
+
+/* Use a flex container to hold the content and footer */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Use the full height of the viewport */
+}
+
+/* Content styling to make sure it grows and pushes the footer down */
+.content {
+    flex: 1; /* This will make the content area grow and push the footer down */
+}
+
+/* Footer styling (adjust as necessary) */
+.footer {
+    width: 100%;
+    text-align: center;
+    /* No need for 'position: absolute;' here if using flexbox as above */
+}

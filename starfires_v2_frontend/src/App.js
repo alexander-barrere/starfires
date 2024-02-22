@@ -17,20 +17,22 @@ import './App.css';
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <NavigationBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/treasures" element={<Treasures />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/mastery" element={<Mastery />} />
-          <Route path="/consultations" element={<Consultations />} />
-          <Route path="/stargate" element={<Stargate />} />
-          <Route path="/cart" element={<CartPage />} />
-          {/* Add more routes as needed */}
-        </Routes>
+        <main style={{ flex: '1' }}> {/* Ensure that the main content can expand */}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegistrationPage />} />
+            <Route path="/treasures" element={<Treasures />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/mastery" element={<Mastery />} />
+            <Route path="/consultations" element={<Consultations />} />
+            <Route path="/stargate" element={<Stargate />} />
+            <Route path="/cart" element={<CartPage />} />
+            {/* Add more routes as needed */}
+          </Routes>
+        </main>
         <Footer />
       </div>
     </Router>

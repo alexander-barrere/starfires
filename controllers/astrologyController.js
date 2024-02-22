@@ -1,23 +1,23 @@
-const User = require('../models/User');
-const AstroChart = require('node-astro-chart'); // Hypothetical library - replace with real one if available
+const { spawn } = require('child_process');
+const path = require('path');
 
-exports.getAstrologyChart = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user) {
-      return res.status(404).json({ msg: 'User not found' });
+exports.generateAstrologicalReport = (req, res) => {
+  const { firstName, birthDate, birthTime, city, chartType } = req.body;
+  const scriptPath = path.join(__dirname, '../python-scripts/astro_report.py');
+
+  const process = spawn('python', [scriptPath, firstName, birthDate, birthTime, city, chartType]);
+  let dataToSend;
+
+  process.stdout.on('data', (data) => {
+    console.log(`stdout: ${data}`);
+    dataToSend += data.toString();
+  });
+  
+  process.on('close', (code) => {
+    if (code !== 0) {
+      return res.status(500).send('Error generating chart');
+    } else {
+      res.send({ chartPath: dataToSend.trim() });
     }
-    const chartData = AstroChart.calculate({
-      date: user.birthDate,
-      time: user.birthTime,
-      latitude: user.birthLatitude,
-      longitude: user.birthLongitude
-    });
-    const svgChart = AstroChart.generateSVG(chartData);
-    res.set('Content-Type', 'image/svg+xml');
-    res.send(svgChart);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
-  }
+  });
 };
