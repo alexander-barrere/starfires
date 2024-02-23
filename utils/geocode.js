@@ -1,7 +1,7 @@
 const axios = require('axios');
 
 async function geocode(city, state, country) {
-    const apiKey = "89d5a7e1287b40b9b8418e3e7775e054"; // Use your OpenCageData API key
+    const apiKey = "89d5a7e1287b40b9b8418e3e7775e054";
     const query = encodeURIComponent(`${city}, ${state}, ${country}`);
     const url = `https://api.opencagedata.com/geocode/v1/json?q=${query}&key=${apiKey}`;
 
@@ -20,3 +20,5 @@ async function geocode(city, state, country) {
         throw error;
     }
 }
+
+module.exports = geocode;

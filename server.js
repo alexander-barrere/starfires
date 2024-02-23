@@ -4,6 +4,7 @@ const socketIo = require('socket.io');
 const connectDB = require('./config/db');
 const passport = require('passport');
 const cors = require('cors');
+const logRequestBody = require('./middleware/logRequestBody');
 
 // Connect Database
 connectDB();
@@ -21,6 +22,7 @@ const io = socketIo(server, {
 
 // Middleware
 app.use(express.json());
+app.use(logRequestBody); // Log Request Body Middleware
 require('./config/auth')(passport);
 app.use(passport.initialize());
 const authRoutes = require('./routes/auth');
@@ -52,3 +54,4 @@ app.get('/api/ping', (req, res) => {
 server.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+

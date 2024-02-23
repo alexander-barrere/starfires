@@ -2,19 +2,18 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { validationResult } = require('express-validator');
 const User = require('../models/User');
-// Assuming you've created a geocode utility
 const geocode = require('../utils/geocode');
 
 exports.register = async (req, res) => {
-  console.log('Starting user registration process...'); // Initial log
+  console.log('Starting user registration process...');
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log('Validation errors:', errors.array()); // Log validation errors
+    console.log('Validation errors:', errors.array());
     return res.status(400).json({ errors: errors.array() });
   }
   
   const { username, email, password, name, birthDate, birthTime, city, state, country } = req.body;
-  console.log('Received registration data:', { username, email, name, birthDate, birthTime, city, state, country }); // Log received data
+  console.log('Received registration data:', { username, email, name, birthDate, birthTime, city, state, country });
   
   try {
     console.log(`Checking if user already exists for email: ${email}`);
@@ -25,7 +24,6 @@ exports.register = async (req, res) => {
     }
 
     console.log(`Performing geocoding for ${city}, ${state}, ${country}`);
-    // Perform geocoding to get latitude and longitude
     const { latitude, longitude } = await geocode(city, state, country);
     console.log(`Geocoding results - Latitude: ${latitude}, Longitude: ${longitude}`);
 
@@ -39,7 +37,12 @@ exports.register = async (req, res) => {
       city,
       state,
       country,
-    });
+      // Update to use new location format
+      location: {
+        type: 'Point',
+        coordinates: [parseFloat(longitude), parseFloat(latitude)] // Note: longitude first, then latitude
+      }
+    });    
 
     const salt = await bcrypt.genSalt(10);
     user.password = await bcrypt.hash(password, salt);

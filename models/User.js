@@ -23,13 +23,16 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  birthLatitude: {
-    type: Number,
-    required: false
-  },
-  birthLongitude: {
-    type: Number,
-    required: false
+  location: {  // New location field for geospatial data
+    type: {
+      type: String, 
+      enum: ['Point'], 
+      default: 'Point'
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      index: '2dsphere' // Create a geospatial index
+    }
   },
   created_at: {
     type: Date,
@@ -38,7 +41,6 @@ const UserSchema = new mongoose.Schema({
   last_login: {
     type: Date
   },
-  // Additional fields based on new requirement
   isSubscriber: {
     type: Boolean,
     default: false
