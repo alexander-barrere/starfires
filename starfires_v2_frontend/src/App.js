@@ -11,7 +11,8 @@ import Mastery from './pages/Mastery';
 import Consultations from './pages/Consultations';
 import Stargate from './pages/Stargate';
 import CartPage from './pages/CartPage';
-// Import other pages components
+import UserProfilePage from './pages/userProfilePage';
+
 import './App.css';
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
     <Router>
       <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <NavigationBar />
-        <main style={{ flex: '1' }}> {/* Ensure that the main content can expand */}
+        <main style={{ flex: '1' }}>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<LoginPage />} />
@@ -30,7 +31,7 @@ function App() {
             <Route path="/consultations" element={<Consultations />} />
             <Route path="/stargate" element={<Stargate />} />
             <Route path="/cart" element={<CartPage />} />
-            {/* Add more routes as needed */}
+            <Route path="/profile" element={<UserProfilePage />} />
           </Routes>
         </main>
         <Footer />

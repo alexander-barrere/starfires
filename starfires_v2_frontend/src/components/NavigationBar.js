@@ -1,10 +1,13 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import { FaUserCircle } from 'react-icons/fa'; // Ensure this is imported or use an alternative
 
 const NavigationBar = () => {
+  const isAuthenticated = localStorage.getItem('token') ? true : false; // Check if user is authenticated
+
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" className="navbar-custom">
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Link to="/" className="navbar-brand">Starfires V2</Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
@@ -35,7 +38,27 @@ const NavigationBar = () => {
           </Nav.Item>
           <Nav.Item>
             <Link to="/cart" className="nav-link">Cart</Link>
-          </Nav.Item>
+          </Nav.Item>          {isAuthenticated && (
+            <Nav.Item>
+              <Link to="/profile" className="nav-link">
+                <FaUserCircle /> Profile
+              </Link>
+            </Nav.Item>
+          )}
+          {isAuthenticated ? (
+            <Nav.Item>
+              <Link to="/logout" className="nav-link">Logout</Link> {/* Ensure you handle the logout functionality */}
+            </Nav.Item>
+          ) : (
+            <>
+              <Nav.Item>
+                <Link to="/login" className="nav-link">Login</Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Link to="/register" className="nav-link">Register</Link>
+              </Nav.Item>
+            </>
+          )}
         </Nav>
       </Navbar.Collapse>
     </Navbar>
