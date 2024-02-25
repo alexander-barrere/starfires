@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
-axios.get('/user/profile')
-
 function UserProfile() {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
     useEffect(() => {
-        axios.get('/api/user/profile') // Adjust this endpoint as necessary
+        axios.get('/user/profile') // Adjust this endpoint as necessary
             .then(response => {
                 setUserData(response.data);
                 setLoading(false);
