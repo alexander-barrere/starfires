@@ -37,10 +37,43 @@ h1, h2, h3 {
 h1 { font-size: 2.8rem; }
 h2, h3 { font-weight: 400; }
 
-/* Navigation bar styling */
+.header {
+    position: relative; /* Establishes a positioning context */
+    width: 100%; /* Full width */
+    height: auto; /* Adjust based on your header image's aspect ratio */
+}
+
+.header img {
+    width: 100%; /* Makes the image responsive */
+    height: auto; /* Maintains aspect ratio */
+    min-height: 100px; /* Minimum height to ensure visibility */
+    max-height: 710px; /* Maximum height based on the original image's height */
+}
+
+/* Ensures the header is not disproportionately tall on wide screens */
+@media (min-width: 1364px) {
+    .header img {
+        height: 710px; /* Original height of the image */
+        width: auto; /* Adjust width automatically to maintain aspect ratio */
+    }
+}
+
+/* Hero header styles */
+.hero-header {
+    text-align: center;
+    padding: 5rem 0;
+    background: linear-gradient(135deg, #091236 0%, #1E215D 100%);
+    color: #fff;
+}
+
+/* Existing Navigation bar styling */
 .navbar-custom {
     background-color: #2C2F33;
     border-bottom: 3px solid #7289DA;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
 }
 
 .navbar-brand, .nav-link {
@@ -56,12 +89,33 @@ h2, h3 { font-weight: 400; }
     color: #7289DA !important;
 }
 
-/* Hero header styles */
-.hero-header {
-    text-align: center;
-    padding: 5rem 0;
-    background: linear-gradient(135deg, #091236 0%, #1E215D 100%);
-    color: #fff;
+/* Adjusted to maintain sticky functionality with the customized background */
+.navbar {
+    position: -webkit-sticky; /* For Safari */
+    position: sticky;
+    top: 0; /* Set to the top of the viewport */
+    z-index: 1000; /* Ensure it stays above other content */
+    box-shadow: 0 2px 2px -2px rgba(0,0,0,.2);
+}
+
+.navbar-custom {
+    background-color: rgba(44, 47, 51, 0.8); /* Adjust the RGBA values as needed */
+    border-bottom: 3px solid #7289DA;
+    position: absolute; /* Position the navbar over the header image */
+    width: 100%; /* Ensure it spans the full width of the viewport */
+    top: 0; /* Align it to the top of the viewport */
+    left: 0; /* Align it to the left of the viewport */
+}
+
+/* Styling for the right-aligned user actions group */
+.user-actions a {
+    margin-left: 10px; /* Spacing between user action links */
+}
+
+/* New: Ensuring user-actions group is aligned to the right */
+.user-actions {
+    display: flex;
+    align-items: center;
 }
 
 /* Card styles for feature sections */
@@ -114,8 +168,6 @@ h2, h3 { font-weight: 400; }
     background-color: #363D44;
 }
 
-/* Testimonial and responsive styles remain unchanged */
-
 /* Enhancements for immersive experience */
 #root {
     display: flex;
@@ -125,6 +177,7 @@ h2, h3 { font-weight: 400; }
 
 .content { flex: 1; }
 
+/* Footer styles */
 .footer {
     background-color: #2C2F33;
     color: #B8B8B8;

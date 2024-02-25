@@ -8,10 +8,10 @@ const NavigationBar = () => {
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
-      <Link to="/" className="navbar-brand">Starfires V2</Link>
+      <Link to="/" className="navbar-brand">Starfires</Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
+        <Nav className="mr-auto"> {/* Change from ml-auto to mr-auto for left alignment */}
           <Nav.Item>
             <Link to="/" className="nav-link">Home</Link>
           </Nav.Item>
@@ -30,32 +30,31 @@ const NavigationBar = () => {
           <Nav.Item>
             <Link to="/consultations" className="nav-link">Consultations</Link>
           </Nav.Item>
-          <Nav.Item>
-            <Link to="/login" className="nav-link">Login</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Link to="/register" className="nav-link">Register</Link>
-          </Nav.Item>
-          <Nav.Item>
-            <Link to="/cart" className="nav-link">Cart</Link>
-          </Nav.Item>          {isAuthenticated && (
-            <Nav.Item>
-              <Link to="/profile" className="nav-link">
-                <FaUserCircle /> Profile
-              </Link>
-            </Nav.Item>
-          )}
-          {isAuthenticated ? (
-            <Nav.Item>
-              <Link to="/logout" className="nav-link">Logout</Link> {/* Ensure you handle the logout functionality */}
-            </Nav.Item>
-          ) : (
+        </Nav>
+        <Nav>
+          {/* User-specific actions grouped together and aligned to the right */}
+          {!isAuthenticated && (
             <>
               <Nav.Item>
                 <Link to="/login" className="nav-link">Login</Link>
               </Nav.Item>
               <Nav.Item>
                 <Link to="/register" className="nav-link">Register</Link>
+              </Nav.Item>
+            </>
+          )}
+          <Nav.Item>
+            <Link to="/cart" className="nav-link">Cart</Link>
+          </Nav.Item>
+          {isAuthenticated && (
+            <>
+              <Nav.Item>
+                <Link to="/profile" className="nav-link">
+                  <FaUserCircle /> Profile
+                </Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Link to="/logout" className="nav-link">Logout</Link> {/* Ensure you handle the logout functionality */}
               </Nav.Item>
             </>
           )}

@@ -12,6 +12,7 @@ import Consultations from './pages/Consultations';
 import Stargate from './pages/Stargate';
 import CartPage from './pages/CartPage';
 import UserProfilePage from './pages/userProfilePage';
+import Header from './components/Header';
 
 import './App.css';
 
@@ -20,6 +21,7 @@ function App() {
     <Router>
       <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <NavigationBar />
+        <Header />
         <main style={{ flex: '1' }}>
           <Routes>
             <Route path="/" element={<Home />} />
