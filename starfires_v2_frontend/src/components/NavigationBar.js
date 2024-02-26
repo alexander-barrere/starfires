@@ -1,15 +1,15 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
-import { FaUserCircle } from 'react-icons/fa'; // Ensure this is imported or use an alternative
+import { Link, useNavigate } from 'react-router-dom'; // Combine the imports for cleaner code
+import { FaUserCircle } from 'react-icons/fa';
 
 const NavigationBar = () => {
-  const isAuthenticated = localStorage.getItem('token') ? true : false; // Check if user is authenticated
+  const navigate = useNavigate(); // Move useNavigate inside the component
+  const isAuthenticated = localStorage.getItem('token') ? true : false;
 
   const handleLogout = () => {
-    localStorage.removeItem('token'); // Remove the token
-    setIsAuthenticated(false); // Update local state or context
-    navigate('/login'); // Redirect user to login page
+    localStorage.removeItem('token');
+    navigate('/login'); // Redirect to login after logout
   };
 
   return (
@@ -17,8 +17,8 @@ const NavigationBar = () => {
       <Link to="/" className="navbar-brand">Starfires</Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
-        <Nav className="mr-auto"> {/* Change from ml-auto to mr-auto for left alignment */}
-          <Nav.Item>
+        <Nav className="mr-auto">
+        <Nav.Item>
             <Link to="/" className="nav-link">Home</Link>
           </Nav.Item>
           <Nav.Item>
@@ -38,7 +38,7 @@ const NavigationBar = () => {
           </Nav.Item>
         </Nav>
         <Nav>
-          {/* User-specific actions grouped together and aligned to the right */}
+          {/* User-specific actions */}
           {!isAuthenticated && (
             <>
               <Nav.Item>
@@ -59,8 +59,8 @@ const NavigationBar = () => {
                   <FaUserCircle /> Profile
                 </Link>
               </Nav.Item>
-              <Nav.Item>
-                <Link to="/logout" className="nav-link">Logout</Link> {/* Ensure you handle the logout functionality */}
+              <Nav.Item onClick={handleLogout} className="nav-link" style={{ cursor: 'pointer' }}>
+                Logout
               </Nav.Item>
             </>
           )}
