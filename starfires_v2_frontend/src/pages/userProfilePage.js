@@ -7,16 +7,21 @@ function UserProfile() {
     const [error, setError] = useState('');
 
     useEffect(() => {
-        axios.get('/user/profile') // Adjust this endpoint as necessary
-            .then(response => {
-                setUserData(response.data);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError('An error occurred while fetching user data');
-                setLoading(false);
-            });
-    }, []);
+        const token = localStorage.getItem('token');
+        axios.get('/users/profile', {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(response => {
+            setUserData(response.data);
+            setLoading(false);
+        })
+        .catch(error => {
+            setError('An error occurred while fetching user data');
+            setLoading(false);
+        });
+    }, []);    
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>{error}</div>;
@@ -28,6 +33,7 @@ function UserProfile() {
             {/* Display user data here */}
             <div>Name: {userData.name}</div>
             <div>Email: {userData.email}</div>
+            <div>Role: {userData.role}</div>
             {/* Add more user data fields as necessary */}
         </div>
     );

@@ -4,10 +4,12 @@ import axios from '../utils/axiosDefaults';
 import { useNavigate } from 'react-router-dom';
 
 const RegistrationPage = () => {
-    const [name, setName] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
     const [birthDate, setBirthDate] = useState('');
     const [birthTime, setBirthTime] = useState('');
     const [city, setCity] = useState('');
@@ -18,40 +20,70 @@ const RegistrationPage = () => {
 
     const handleRegistration = async (event) => {
         event.preventDefault();
+    
+        // Password validation before sending registration data
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.');
+            return; // Stop the registration process if passwords do not match
+        }
+    
+        // Additional password rules can be added here (e.g., minimum length, must contain a number, etc.)
+        if (password.length < 8) {
+            alert('Password must be at least 8 characters long.');
+            return; // Stop the registration process if password is too short
+        }
+    
+        // Add more rules as needed, for example, checking for numbers, uppercase letters, etc.
+        // Example for including numbers and uppercase letters:
+        if (!/[0-9]/.test(password) || !/[A-Z]/.test(password)) {
+            alert('Password must contain at least one number and one uppercase letter.');
+            return; // Stop the registration process if password doesn't meet the criteria
+        }
+    
         try {
             const formattedBirthDate = new Date(birthDate).toISOString();
-
-            await axios.post('/users/register', {
+    
+            const response = await axios.post('/users/register', {
                 username,
                 email,
                 password,
-                name,
+                firstName, // Assuming these fields are properly updated in the state
+                lastName,  // Assuming these fields are properly updated in the state
                 birthDate: formattedBirthDate,
                 birthTime,
                 city,
                 state,
                 country,
             });
-
-            navigate('/login'); // Redirect to login page upon successful registration
+    
+            // Assuming successful registration, redirect user to login page
+            navigate('/login');
         } catch (error) {
             console.error(error.response.data);
+            // Displaying the first error message from the server response, if available
             if (error.response && error.response.data && error.response.data.errors && error.response.data.errors.length > 0) {
-                alert(error.response.data.errors[0].msg); // Show registration error to the user
+                alert(error.response.data.errors[0].msg);
             } else {
-                alert("An unexpected error occurred."); // Fallback error message
+                // Fallback error message when specific errors are not provided by the server
+                alert("An unexpected error occurred.");
             }
-        }        
+        }
     };
+    
 
     return (
         <Container>
             <h1>Register</h1>
             <Form onSubmit={handleRegistration}>
 
-                <Form.Group className="mb-3" controlId="formBasicName">
-                    <Form.Label>Name</Form.Label>
-                    <Form.Control type="text" placeholder="Enter name" value={name} onChange={(e) => setName(e.target.value)} required />
+                <Form.Group className="mb-3" controlId="formBasicFirstName">
+                    <Form.Label>First Name</Form.Label>
+                    <Form.Control type="text" placeholder="Enter first name" value={firstName} onChange={(e) => setFirstName(e.target.value)} required />
+                </Form.Group>
+
+                <Form.Group className="mb-3" controlId="formBasicLastName">
+                    <Form.Label>Last Name</Form.Label>
+                    <Form.Control type="text" placeholder="Enter last name" value={lastName} onChange={(e) => setLastName(e.target.value)} required />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicUsername">
@@ -70,6 +102,10 @@ const RegistrationPage = () => {
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
+                    <Form.Label>Confirm Password</Form.Label>
+                    <Form.Control type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicBirthDate">

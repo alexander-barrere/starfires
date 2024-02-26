@@ -15,6 +15,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  firstName: { // New field for first name
+    type: String,
+    required: true // Set to true if you require the first name on registration
+  },
+  lastName: { // New field for last name
+    type: String,
+    required: true // Set to true if you require the last name on registration
+  },
   birthDate: {
     type: Date,
     required: false
@@ -23,7 +31,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: false
   },
-  location: {  // New location field for geospatial data
+  location: {
     type: {
       type: String, 
       enum: ['Point'], 

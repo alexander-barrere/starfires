@@ -15,10 +15,21 @@ body {
 }
 
 /* Utility classes for spacing */
-.mt-5 { margin-top: 4rem; }
-.mb-4 { margin-bottom: 2rem; }
-.my-4 { margin: 2rem 0; }
-.my-5 { margin: 4rem 0; }
+.mt-5 {
+    margin-top: 4rem;
+}
+
+.mb-4 {
+    margin-bottom: 2rem;
+}
+
+.my-4 {
+    margin: 2rem 0;
+}
+
+.my-5 {
+    margin: 4rem 0;
+}
 
 /* Styling for the main container */
 .container {
@@ -29,32 +40,49 @@ body {
 }
 
 /* Header and titles */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     color: #FFD700;
     margin-bottom: 0.5rem;
 }
 
-h1 { font-size: 2.8rem; }
-h2, h3 { font-weight: 400; }
+h1 {
+    font-size: 2.8rem;
+}
+
+h2,
+h3 {
+    font-weight: 400;
+}
 
 .header {
-    position: relative; /* Establishes a positioning context */
-    width: 100%; /* Full width */
-    height: auto; /* Adjust based on your header image's aspect ratio */
+    position: relative;
+    /* Establishes a positioning context */
+    width: 100%;
+    /* Full width */
+    height: auto;
+    /* Adjust based on your header image's aspect ratio */
 }
 
 .header img {
-    width: 100%; /* Makes the image responsive */
-    height: auto; /* Maintains aspect ratio */
-    min-height: 100px; /* Minimum height to ensure visibility */
-    max-height: 710px; /* Maximum height based on the original image's height */
+    width: 100%;
+    /* Makes the image responsive */
+    height: auto;
+    /* Maintains aspect ratio */
+    min-height: 100px;
+    /* Minimum height to ensure visibility */
+    max-height: 710px;
+    /* Maximum height based on the original image's height */
 }
 
 /* Ensures the header is not disproportionately tall on wide screens */
 @media (min-width: 1364px) {
     .header img {
-        height: 710px; /* Original height of the image */
-        width: auto; /* Adjust width automatically to maintain aspect ratio */
+        height: 710px;
+        /* Original height of the image */
+        width: auto;
+        /* Adjust width automatically to maintain aspect ratio */
     }
 }
 
@@ -76,7 +104,8 @@ h2, h3 { font-weight: 400; }
     padding: 0 20px;
 }
 
-.navbar-brand, .nav-link {
+.navbar-brand,
+.nav-link {
     color: #FFFFFF !important;
 }
 
@@ -91,39 +120,59 @@ h2, h3 { font-weight: 400; }
 
 /* Adjusted to maintain sticky functionality with the customized background */
 .navbar {
-    position: -webkit-sticky; /* For Safari */
+    position: -webkit-sticky;
+    /* For Safari */
     position: sticky;
-    top: 0; /* Set to the top of the viewport */
-    z-index: 1000; /* Ensure it stays above other content */
-    box-shadow: 0 2px 2px -2px rgba(0,0,0,.2);
+    top: 0;
+    /* Set to the top of the viewport */
+    z-index: 1000;
+    /* Ensure it stays above other content */
+    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, .2);
 }
 
 .navbar-collapse {
-    justify-content: space-between; /* This ensures that the .mr-auto class and the user actions Nav are spaced apart */
+    justify-content: space-between;
+    /* This ensures that the .mr-auto class and the user actions Nav are spaced apart */
 }
 
+/* Parallax background */
+.parallax {
+    background-image: url('../public/images/starfires_header.jpeg'); /* Adjust path as necessary */
+    min-height: 500px; /* Adjust based on your preference */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Navbar custom adjustments for parallax */
 .navbar-custom {
-    background-color: rgba(44, 47, 51, 0.8); /* Adjust the RGBA values as needed */
+    background-color: rgba(44, 47, 51, 0.8);
+    /* Semi-transparent background */
     border-bottom: 3px solid #7289DA;
-    position: absolute; /* Position the navbar over the header image */
-    width: 100%; /* Ensure it spans the full width of the viewport */
-    top: 0; /* Align it to the top of the viewport */
-    left: 0; /* Align it to the left of the viewport */
+    position: fixed;
+    /* Ensure navbar stays at top */
+    width: 100%;
+    top: 0;
+    z-index: 10;
+    /* Higher than parallax layer */
 }
 
 /* Styling for the right-aligned user actions group */
 .user-actions {
     transition: opacity 0.5s ease;
 }
+
 .user-actions.hidden {
     opacity: 0;
 }
 
-
 /* Card styles for feature sections */
 .card {
-    background-color: #333849; /* Lighter background for contrast */
-    color: #EAECEE; /* Ensuring readability */
+    background-color: #333849;
+    /* Lighter background for contrast */
+    color: #EAECEE;
+    /* Ensuring readability */
     border-radius: 10px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -131,7 +180,8 @@ h2, h3 { font-weight: 400; }
 
 .card:hover {
     transform: translateY(-10px);
-    box-shadow: 0 12px 24px rgba(0,0,0,0.3); /* Enhanced shadow on hover */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    /* Enhanced shadow on hover */
 }
 
 .card img {
@@ -139,8 +189,13 @@ h2, h3 { font-weight: 400; }
     border-top-right-radius: 10px;
 }
 
-.card-title { font-size: 1.3rem; }
-.card-text { font-size: 0.95rem; }
+.card-title {
+    font-size: 1.3rem;
+}
+
+.card-text {
+    font-size: 0.95rem;
+}
 
 /* Button styles */
 .btn {
@@ -177,7 +232,13 @@ h2, h3 { font-weight: 400; }
     min-height: 100vh;
 }
 
-.content { flex: 1; }
+.cart-icon {
+    display: block; /* Make sure this matches your actual cart icon CSS */
+}
+
+.content {
+    flex: 1;
+}
 
 /* Footer styles */
 .footer {
@@ -189,13 +250,17 @@ h2, h3 { font-weight: 400; }
 
 /* Additional styles for astrological symbols and improved interactivity */
 .card .astro-symbol {
-    width: 50px; /* Example size, adjust as needed */
-    height: 50px; /* Keep aspect ratio */
-    margin: 0 auto; /* Center symbol */
+    width: 50px;
+    /* Example size, adjust as needed */
+    height: 50px;
+    /* Keep aspect ratio */
+    margin: 0 auto;
+    /* Center symbol */
 }
 
 .card .astro-symbol:hover {
-    transform: scale(1.1); /* Slight zoom effect */
+    transform: scale(1.1);
+    /* Slight zoom effect */
 }
 
 /* Accessibility improvements */
@@ -203,5 +268,6 @@ h2, h3 { font-weight: 400; }
 .nav-link,
 .btn,
 .footer {
-    text-shadow: 0 1px 3px rgba(0,0,0,0.1); /* Enhance text readability */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Enhance text readability */
 }

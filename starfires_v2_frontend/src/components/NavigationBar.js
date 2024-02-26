@@ -14,11 +14,10 @@ const NavigationBar = () => {
 
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
-      <Link to="/" className="navbar-brand">Starfires</Link>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-        <Nav.Item>
+          <Nav.Item>
             <Link to="/" className="nav-link">Home</Link>
           </Nav.Item>
           <Nav.Item>
@@ -49,9 +48,14 @@ const NavigationBar = () => {
               </Nav.Item>
             </>
           )}
-          <Nav.Item>
-            <Link to="/cart" className="nav-link">Cart</Link>
-          </Nav.Item>
+          <Nav>
+            {/* Other navigation items */}
+            {isAuthenticated && (
+              <Nav.Item>
+                <Link to="/cart" className="nav-link">Cart</Link>
+              </Nav.Item>
+            )}
+          </Nav>
           {isAuthenticated && (
             <>
               <Nav.Item>
