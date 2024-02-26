@@ -140,13 +140,21 @@ exports.updateProfile = async (req, res) => {
 };
 
 exports.getUserProfile = async (req, res) => {
-    console.log('Get user function is called.');
     try {
-        const user = await User.findById(req.user.id).select('-password');
-        if (!user) return res.status(404).json({ msg: 'User not found' });
-        res.json(user);
-    } catch (err) { handleServerError(err, res); }
+        // Assuming the user ID is stored in req.user.id from the JWT payload
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+        // Optionally remove sensitive information
+        user.password = undefined;
+        return res.json(user);
+    } catch (err) {
+        console.error(err);
+        return res.status(500).send('Server error');
+    }
 };
+
 
 console.log('Register function:', exports.register);
 console.log('Login function:', exports.login);

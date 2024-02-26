@@ -11,7 +11,7 @@ const logRequestBody = require('./middleware/logRequestBody');
 const authRoutes = require('./routes/auth');
 const productRoutes = require('./routes/productRoutes');
 const astrologyRoutes = require('./routes/astrologyRoutes');
-const userRoutes = require('./routes/userRoutes');
+const userRoutes = require('./routes/userRoutes'); // Only one import needed
 const blogRoutes = require('./routes/blogRoutes');
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
 
@@ -29,15 +29,13 @@ app.use(logRequestBody);
 require('./config/auth')(passport); // Passport config
 app.use(passport.initialize());
 
-// Routes
+// Routes setup
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/astrology-charts', astrologyRoutes);
-app.use('/api/users', userRoutes); // Make sure not to duplicate this route if it’s already declared in authRoutes
+app.use('/api/users', userRoutes); // Correct base URL for user-related routes
 app.use('/api/posts', blogRoutes);
 app.use('/api/subscribe', subscriptionRoutes);
-
-console.log('Server.js file is running.');
 
 // Health check route
 app.get('/api/ping', (req, res) => res.json({ message: 'pong' }));
@@ -55,7 +53,3 @@ require('./sockets')(io); // Setup for socket event listeners
 
 // Server listening
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
-
-console.log('Routes are being set up.');
-app.use('/api/auth', authRoutes);
-console.log('Auth routes have been set up.');
