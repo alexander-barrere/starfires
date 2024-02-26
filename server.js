@@ -37,6 +37,8 @@ app.use('/api/users', userRoutes); // Make sure not to duplicate this route if i
 app.use('/api/posts', blogRoutes);
 app.use('/api/subscribe', subscriptionRoutes);
 
+console.log('Server.js file is running.');
+
 // Health check route
 app.get('/api/ping', (req, res) => res.json({ message: 'pong' }));
 
@@ -53,3 +55,7 @@ require('./sockets')(io); // Setup for socket event listeners
 
 // Server listening
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+console.log('Routes are being set up.');
+app.use('/api/auth', authRoutes);
+console.log('Auth routes have been set up.');

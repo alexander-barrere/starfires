@@ -6,6 +6,12 @@ import { FaUserCircle } from 'react-icons/fa'; // Ensure this is imported or use
 const NavigationBar = () => {
   const isAuthenticated = localStorage.getItem('token') ? true : false; // Check if user is authenticated
 
+  const handleLogout = () => {
+    localStorage.removeItem('token'); // Remove the token
+    setIsAuthenticated(false); // Update local state or context
+    navigate('/login'); // Redirect user to login page
+  };
+
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Link to="/" className="navbar-brand">Starfires</Link>

@@ -4,79 +4,45 @@ const { validationResult } = require('express-validator');
 const User = require('../models/User');
 const geocode = require('../utils/geocode');
 
+// Helper function for error handling
+const handleServerError = (err, res) => {
+    console.error(err);
+    res.status(500).send('Server Error');
+};
+
+console.log('UserController file is running.');
+
 exports.register = async (req, res) => {
-  console.log('Starting user registration process...');
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    console.log('Validation errors:', errors.array());
-    return res.status(400).json({ errors: errors.array() });
-  }
-  
-  const { username, email, password, name, birthDate, birthTime, city, state, country } = req.body;
-  console.log('Received registration data:', { username, email, name, birthDate, birthTime, city, state, country });
-  
-  try {
-    console.log(`Checking if user already exists for email: ${email}`);
-    let user = await User.findOne({ email });
-    if (user) {
-      console.log(`User already exists for email: ${email}`);
-      return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
+    console.log('Register function is called.');
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
     }
+    const { username, email, password, name, birthDate, birthTime, city, state, country } = req.body;
+    try {
+        let user = await User.findOne({ email });
+        if (user) return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
 
-    console.log(`Performing geocoding for ${city}, ${state}, ${country}`);
-    const { latitude, longitude } = await geocode(city, state, country);
-    console.log(`Geocoding results - Latitude: ${latitude}, Longitude: ${longitude}`);
-
-    user = new User({
-      name,
-      username,
-      email,
-      password,
-      birthDate: birthDate ? new Date(birthDate) : null,
-      birthTime,
-      city,
-      state,
-      country,
-      // Update to use new location format
-      location: {
-        type: 'Point',
-        coordinates: [parseFloat(longitude), parseFloat(latitude)] // Note: longitude first, then latitude
-      }
-    });    
-
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(password, salt);
-
-    console.log(`Saving new user: ${username}`);
-    await user.save();
-    console.log(`User ${username} saved successfully`);
-
-    const payload = {
-      user: {
-        id: user.id
-      }
-    };
-
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: 3600 },
-      (err, token) => {
-        if(err) {
-          console.error('Error signing JWT token:', err);
-          throw err;
-        }
-        console.log(`JWT token generated for user: ${username}`);
-        res.json({ token });
-      }
-    );
-  } catch (err) {
-    console.error('Error in user registration process:', err.message);
-    res.status(500).send('Server error');
-  }
+        const { latitude, longitude } = await geocode(city, state, country);
+        user = new User({
+            name, username, email, password,
+            birthDate: birthDate ? new Date(birthDate) : null,
+            birthTime, city, state, country,
+            location: { type: 'Point', coordinates: [parseFloat(longitude), parseFloat(latitude)] }
+        });
+        const salt = await bcrypt.genSalt(10);
+        user.password = await bcrypt.hash(password, salt);
+        await user.save();
+        const payload = { user: { id: user.id } };
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
+            if (err) throw err;
+            res.json({ token });
+        });
+    } catch (err) { handleServerError(err, res); }
 };
 
 exports.login = async (req, res) => {
+    console.log('Login function is called.');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -84,8 +50,31 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     try {
         let user = await User.findOne({ email });
+        if (!user) return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
+        const payload = { user: { id: user.id } };
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
+            if (err) throw err;
+            res.json({ token });
+        });
+    } catch (err) { handleServerError(err, res); }
+};
+
+exports.adminLogin = async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+    const { email, password } = req.body;
+    try {
+        let user = await User.findOne({ email });
+        // Check if user exists and has the admin role
         if (!user) {
             return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
+        }
+        if (user.role !== 'admin') { // Assuming 'role' is the field for user roles and 'admin' is the value for administrators
+            return res.status(401).json({ errors: [{ msg: 'Unauthorized, admin access only' }] });
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
@@ -93,10 +82,11 @@ exports.login = async (req, res) => {
         }
         const payload = {
             user: {
-                id: user.id
+                id: user.id,
+                role: user.role // Including role in the token can be useful
             }
         };
-        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
+        jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) throw err;
             res.json({ token });
         });
@@ -106,39 +96,59 @@ exports.login = async (req, res) => {
     }
 };
 
-exports.adminLogin = async (req, res) => {
-  const { email, password } = req.body;
+exports.getAstrologyChart = async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
 
-  try {
-    let user = await User.findOne({ email });
-    if (!user || user.role !== 'admin') {
-      return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
-    }
-
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-      return res.status(401).json({ errors: [{ msg: 'Unauthorized' }] });
-    }
-
-    if (user.role === 'admin') {
-      const payload = {
-        user: {
-          id: user.id
+        if (!user) {
+            return res.status(404).json({ msg: 'User not found' });
         }
-      };
 
-      jwt.sign(
-        payload,
-        process.env.JWT_SECRET,
-        { expiresIn: '1h' },
-        (err, token) => {
-          if (err) throw err;
-          res.json({ token });
-        }
-      );
+        // Example: Generate or retrieve the astrology chart based on user data
+        // This is where you'd integrate with your astrology chart generation logic
+        // For demonstration, I'll just return a placeholder response
+        const astrologyChartData = {
+            user: user.name,
+            chart: "Placeholder for user's astrology chart data",
+            message: "Astrology chart generated successfully."
+        };
+
+        res.json(astrologyChartData);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Server Error');
     }
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server error');
-  }
 };
+
+
+exports.updateProfile = async (req, res) => {
+    console.log('UpdateProfile function is called.');
+    try {
+        const { birthDate, birthTime, birthLatitude, birthLongitude, isSubscriber, role } = req.body;
+        const user = await User.findById(req.user.id);
+        if (!user) return res.status(404).json({ msg: 'User not found' });
+        // Update fields
+        user.birthDate = birthDate;
+        user.birthTime = birthTime;
+        user.birthLatitude = birthLatitude;
+        user.birthLongitude = birthLongitude;
+        user.isSubscriber = isSubscriber !== undefined ? isSubscriber : user.isSubscriber;
+        user.role = role || user.role;
+        await user.save();
+        res.json(user);
+    } catch (err) { handleServerError(err, res); }
+};
+
+exports.getUserProfile = async (req, res) => {
+    console.log('Get user function is called.');
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) return res.status(404).json({ msg: 'User not found' });
+        res.json(user);
+    } catch (err) { handleServerError(err, res); }
+};
+
+console.log('Register function:', exports.register);
+console.log('Login function:', exports.login);
+console.log('UpdateProfile function:', exports.updateProfile);
+console.log('GetUserProfile function:', exports.getUserProfile);
