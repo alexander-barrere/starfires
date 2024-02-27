@@ -47,8 +47,8 @@ const RegistrationPage = () => {
                 username,
                 email,
                 password,
-                firstName, // Assuming these fields are properly updated in the state
-                lastName,  // Assuming these fields are properly updated in the state
+                firstName,
+                lastName,
                 birthDate: formattedBirthDate,
                 birthTime,
                 city,
@@ -57,7 +57,7 @@ const RegistrationPage = () => {
             });
     
             // Assuming successful registration, redirect user to login page
-            navigate('/login');
+            navigate('/profile');
         } catch (error) {
             console.error(error.response.data);
             // Displaying the first error message from the server response, if available

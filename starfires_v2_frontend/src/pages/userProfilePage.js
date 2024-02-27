@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import '../App.css'; // Make sure this path is correct
 
 function UserProfile() {
     const [userData, setUserData] = useState(null);
@@ -23,18 +24,27 @@ function UserProfile() {
         });
     }, []);    
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>{error}</div>;
-    if (!userData) return <div>No user data found</div>;
+    if (loading) return <div className="container mt-5"><div>Loading...</div></div>;
+    if (error) return <div className="container mt-5 error"><div>{error}</div></div>;
+    if (!userData) return <div className="container mt-5 error"><div>No user data found</div></div>;
 
     return (
-        <div>
-            <h1>User Profile</h1>
-            {/* Display user data here */}
-            <div>Name: {userData.name}</div>
-            <div>Email: {userData.email}</div>
-            <div>Role: {userData.role}</div>
-            {/* Add more user data fields as necessary */}
+        <div className="container mt-5">
+            <div className="profile-container">
+                <h1 className="profile-title">User Profile</h1>
+                <div className="profile-content">
+                    <div className="profile-field">
+                        <label>Username:</label><span>{userData.username}</span>
+                    </div>
+                    <div className="profile-field">
+                        <label>Email:</label><span>{userData.email}</span>
+                    </div>
+                    <div className="profile-field">
+                        <label>Role:</label><span>{userData.role}</span>
+                    </div>
+                    {/* Add more user data fields as necessary */}
+                </div>
+            </div>
         </div>
     );
 }

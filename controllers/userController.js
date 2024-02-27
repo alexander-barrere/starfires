@@ -18,14 +18,14 @@ exports.register = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { username, email, password, name, birthDate, birthTime, city, state, country } = req.body;
+    const { username, email, password, firstName, lastName, birthDate, birthTime, city, state, country } = req.body;
     try {
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
 
         const { latitude, longitude } = await geocode(city, state, country);
         user = new User({
-            name, username, email, password,
+            firstName, lastName, username, email, password,
             birthDate: birthDate ? new Date(birthDate) : null,
             birthTime, city, state, country,
             location: { type: 'Point', coordinates: [parseFloat(longitude), parseFloat(latitude)] }
@@ -33,10 +33,14 @@ exports.register = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
         await user.save();
+
+        // User registered, now log them in by generating a token
         const payload = { user: { id: user.id } };
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: 3600 }, (err, token) => {
             if (err) throw err;
-            res.json({ token });
+            // Return both token and user info, minus password
+            user.password = undefined; // Ensure the password is not sent back
+            res.json({ token, user });
         });
     } catch (err) { handleServerError(err, res); }
 };

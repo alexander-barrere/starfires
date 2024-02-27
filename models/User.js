@@ -15,13 +15,13 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  firstName: { // New field for first name
+  firstName: {
     type: String,
-    required: true // Set to true if you require the first name on registration
+    required: true
   },
-  lastName: { // New field for last name
+  lastName: { 
     type: String,
-    required: true // Set to true if you require the last name on registration
+    required: true
   },
   birthDate: {
     type: Date,
