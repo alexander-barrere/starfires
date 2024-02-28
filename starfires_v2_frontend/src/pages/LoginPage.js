@@ -11,12 +11,16 @@ const LoginPage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            const response = await axios.post('/users/login', { email, password });
-            localStorage.setItem('token', response.data.token);
-            navigate('/');
+            // Make sure this matches the actual route configured in your Express backend
+            const response = await axios.post('/auth/login', {
+                email,
+                password
+            });
+            localStorage.setItem('token', response.data.token); // Save the token to localStorage
+            navigate('/profile'); // Redirect to the profile page after successful login
         } catch (error) {
-            console.error(error.response.data);
-            alert(error.response.data.errors[0].msg); // Show login error to the user
+            console.error('Login error:', error.response ? error.response.data : 'Unknown Error');
+            // Optionally show a user-friendly error message
         }
     };
 

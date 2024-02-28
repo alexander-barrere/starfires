@@ -15,6 +15,33 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  firstName: {
+    type: String,
+    required: true
+  },
+  lastName: { 
+    type: String,
+    required: true
+  },
+  birthDate: {
+    type: Date,
+    required: false
+  },
+  birthTime: {
+    type: String,
+    required: false
+  },
+  location: {
+    type: {
+      type: String, 
+      enum: ['Point'], 
+      default: 'Point'
+    },
+    coordinates: {
+      type: [Number], // [longitude, latitude]
+      index: '2dsphere' // Create a geospatial index
+    }
+  },
   created_at: {
     type: Date,
     default: Date.now
@@ -22,9 +49,13 @@ const UserSchema = new mongoose.Schema({
   last_login: {
     type: Date
   },
+  isSubscriber: {
+    type: Boolean,
+    default: false
+  },
   role: {
     type: String,
-    enum: ['user', 'admin', 'guest', 'subscriber'], // Added 'guest' and 'subscriber' to the roles enum
+    enum: ['user', 'admin', 'subscriber'],
     default: 'user'
   }
 });

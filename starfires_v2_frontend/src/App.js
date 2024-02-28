@@ -11,26 +11,31 @@ import Mastery from './pages/Mastery';
 import Consultations from './pages/Consultations';
 import Stargate from './pages/Stargate';
 import CartPage from './pages/CartPage';
-// Import other pages components
+import UserProfilePage from './pages/userProfilePage';
+import Header from './components/Header';
+
 import './App.css';
 
 function App() {
   return (
     <Router>
-      <div className="App">
+      <div className="App" style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
         <NavigationBar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/treasures" element={<Treasures />} />
-          <Route path="/library" element={<Library />} />
-          <Route path="/mastery" element={<Mastery />} />
-          <Route path="/consultations" element={<Consultations />} />
-          <Route path="/stargate" element={<Stargate />} />
-          <Route path="/cart" element={<CartPage />} />
-          {/* Add more routes as needed */}
-        </Routes>
+        <Header />
+        <main style={{ flex: '1' }}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegistrationPage />} />
+            <Route path="/treasures" element={<Treasures />} />
+            <Route path="/library" element={<Library />} />
+            <Route path="/mastery" element={<Mastery />} />
+            <Route path="/consultations" element={<Consultations />} />
+            <Route path="/stargate" element={<Stargate />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/profile" element={<UserProfilePage />} />
+          </Routes>
+        </main>
         <Footer />
       </div>
     </Router>

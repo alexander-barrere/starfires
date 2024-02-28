@@ -2,10 +2,7 @@
 const Course = require('../models/Course');
 const UserProgress = require('../models/UserProgress');
 const Assessment = require('../models/Assessment');
-const axios = require('axios');
-const astrologyServiceUrl = 'http://localhost:5001/compute';
 
-// Define all the controller functions here
 // Function to retrieve all courses
 exports.getCourses = async (req, res) => {
   try {
@@ -45,17 +42,5 @@ exports.getAssessmentForCourse = async (req, res) => {
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server Error');
-  }
-};
-
-// Function to get astrology chart computation
-exports.getAstrologyChart = async (req, res) => {
-  try {
-    const { userData } = req.body;
-    const result = await axios.post(astrologyServiceUrl, userData);
-    res.json(result.data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
   }
 };

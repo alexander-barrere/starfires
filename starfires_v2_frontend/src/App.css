@@ -7,10 +7,11 @@
 
 body {
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #f0f2f5;
-    color: #444;
+    font-family: 'Poppins', sans-serif;
+    background: #1e2029;
+    color: #EAECEE;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
 /* Utility classes for spacing */
@@ -42,157 +43,267 @@ body {
 h1,
 h2,
 h3 {
-    color: #333;
-    font-weight: 300;
+    color: #FFD700;
+    margin-bottom: 0.5rem;
 }
 
 h1 {
-    font-size: 2.5rem;
-    margin-bottom: 1rem;
+    font-size: 2.8rem;
 }
 
-/* Navigation bar styling */
-/* Navigation Bar Styles */
-.navbar-custom {
-    background-color: #333;
-    /* Adjust to match your theme */
-    border-bottom: 2px solid #007bff;
-    /* A highlight border, for example */
+h2,
+h3 {
+    font-weight: 400;
 }
 
-.navbar-brand,
-.nav-link {
-    color: #fff !important;
-    /* Ensure text color is white */
+.header {
+    position: relative;
+    /* Establishes a positioning context */
+    width: 100%;
+    /* Full width */
+    height: auto;
+    /* Adjust based on your header image's aspect ratio */
 }
 
-.nav-link {
-    margin-right: 20px;
-    /* Space out links */
+.header img {
+    width: 100%;
+    /* Makes the image responsive */
+    height: auto;
+    /* Maintains aspect ratio */
+    min-height: 100px;
+    /* Minimum height to ensure visibility */
+    max-height: 710px;
+    /* Maximum height based on the original image's height */
 }
 
-.nav-link:hover {
-    color: #007bff !important;
-    /* Highlight color on hover */
+/* Ensures the header is not disproportionately tall on wide screens */
+@media (min-width: 1364px) {
+    .header img {
+        height: 710px;
+        /* Original height of the image */
+        width: auto;
+        /* Adjust width automatically to maintain aspect ratio */
+    }
 }
-
-/* Adjust toggle button color */
-.navbar-dark .navbar-toggler {
-    border-color: #007bff;
-}
-
-.navbar-dark .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' fill='%23007bff' viewBox='0 0 30 30'><path stroke='%23007bff' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/></svg>");
-}
-
 
 /* Hero header styles */
 .hero-header {
     text-align: center;
-    padding: 4rem 0;
-    background: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-    color: #fff;
+    padding: 5rem 0;
+    background: linear-gradient(135deg, #091236 0%, #1E215D 100%);
+    color: #112a38;
+}
+
+/* Existing Navigation bar styling */
+.navbar-custom {
+    background-color: #2C2F33;
+    border-bottom: 3px solid #7289DA;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.navbar-brand,
+.nav-link {
+    color: #FFFFFF !important;
+}
+
+.nav-link {
+    margin-right: 20px;
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    color: #7289DA !important;
+}
+
+/* Adjusted to maintain sticky functionality with the customized background */
+.navbar {
+    position: -webkit-sticky;
+    /* For Safari */
+    position: sticky;
+    top: 0;
+    /* Set to the top of the viewport */
+    z-index: 1000;
+    /* Ensure it stays above other content */
+    box-shadow: 0 2px 2px -2px rgba(0, 0, 0, .2);
+}
+
+.navbar-collapse {
+    justify-content: space-between;
+    /* This ensures that the .mr-auto class and the user actions Nav are spaced apart */
+}
+
+/* Parallax background */
+.parallax {
+    background-image: url('../public/images/starfires_header.jpeg'); /* Adjust path as necessary */
+    min-height: 500px; /* Adjust based on your preference */
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+/* Navbar custom adjustments for parallax */
+.navbar-custom {
+    background-color: rgba(44, 47, 51, 0.8);
+    /* Semi-transparent background */
+    border-bottom: 3px solid #7289DA;
+    position: fixed;
+    /* Ensure navbar stays at top */
+    width: 100%;
+    top: 0;
+    z-index: 10;
+    /* Higher than parallax layer */
+}
+
+/* Styling for the right-aligned user actions group */
+.user-actions {
+    transition: opacity 0.5s ease;
+}
+
+.user-actions.hidden {
+    opacity: 0;
 }
 
 /* Card styles for feature sections */
 .card {
-    border: none;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease-in-out;
+    background-color: #333849;
+    /* Lighter background for contrast */
+    color: #EAECEE;
+    /* Ensuring readability */
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
 }
 
 .card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
+    /* Enhanced shadow on hover */
 }
 
 .card img {
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    max-height: 200px;
-    width: 100%;
-    object-fit: cover;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
 }
 
 .card-title {
-    font-size: 1.2rem;
-    margin-top: 1rem;
+    font-size: 1.3rem;
 }
 
 .card-text {
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+    font-size: 0.95rem;
 }
 
 /* Button styles */
 .btn {
     border: none;
-    border-radius: 50px;
+    border-radius: 30px;
     padding: 0.75rem 1.5rem;
-    cursor: pointer;
-    transition: background 0.3s ease-in-out;
+    font-weight: 500;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
 }
 
 .btn-primary {
-    background-color: #5e72e4;
+    background-color: #7289DA;
     color: #fff;
 }
 
 .btn-primary:hover {
-    background-color: #324cdd;
+    background-color: #5b6eae;
 }
 
 .btn-secondary {
-    background-color: #f4f4f4;
-    color: #333;
+    background-color: #444B54;
+    color: #fff;
 }
 
 .btn-secondary:hover {
-    background-color: #e4e4e4;
+    background-color: #363D44;
 }
 
-/* Testimonial section styling */
-.testimonial {
-    background: #fff;
-    padding: 2rem;
+/* User Profile enhancements */
+.profile-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-bottom: 2rem;
-    position: relative;
+    background-color: #180051;
 }
 
-.testimonial::before {
-    content: '“';
-    font-size: 5rem;
-    color: rgba(0, 0, 0, 0.1);
-    position: absolute;
-    top: -1.5rem;
-    left: -1.5rem;
+.profile-title {
+    text-align: center;
+    color: #333;
 }
 
-/* Responsive design */
-@media screen and (max-width: 768px) {
-    .hero-header {
-        padding: 2rem 0;
-    }
-
-    h1 {
-        font-size: 2rem;
-    }
-
-    .testimonial::before {
-        font-size: 3rem;
-    }
+.profile-content {
+    margin-top: 20px;
 }
 
-@media screen and (max-width: 576px) {
-    .navbar {
-        text-align: center;
-    }
+.profile-field {
+    margin-bottom: 10px;
+}
 
-    .btn {
-        display: block;
-        width: 100%;
-        margin-top: 1rem;
-    }
+.profile-field label {
+    font-weight: bold;
+}
+
+.profile-field span {
+    margin-left: 10px;
+}
+
+.error {
+    color: red;
+}
+
+
+/* Enhancements for immersive experience */
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.cart-icon {
+    display: block; /* Make sure this matches your actual cart icon CSS */
+}
+
+.content {
+    flex: 1;
+}
+
+/* Footer styles */
+.footer {
+    background-color: #2C2F33;
+    color: #B8B8B8;
+    padding: 2rem 0;
+    text-align: center;
+}
+
+/* Additional styles for astrological symbols and improved interactivity */
+.card .astro-symbol {
+    width: 50px;
+    /* Example size, adjust as needed */
+    height: 50px;
+    /* Keep aspect ratio */
+    margin: 0 auto;
+    /* Center symbol */
+}
+
+.card .astro-symbol:hover {
+    transform: scale(1.1);
+    /* Slight zoom effect */
+}
+
+/* Accessibility improvements */
+.card-text,
+.nav-link,
+.btn,
+.footer {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    /* Enhance text readability */
 }

@@ -165,3 +165,6 @@ dist
 .yarn/install-state.gz
 .pnp.*
 .aider*
+
+# secrets
+payment-keys.json
