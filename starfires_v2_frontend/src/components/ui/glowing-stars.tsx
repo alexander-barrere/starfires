@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { cn } from "../../utils/cn";  // Adjust the path according to your project structure
+import { cn } from "../../utils/cn";
 
 export const GlowingStarsBackgroundCard = ({
     className,
@@ -15,8 +15,12 @@ export const GlowingStarsBackgroundCard = ({
 
     return (
         <div
-            onMouseEnter={() => setMouseEnter(true)}
-            onMouseLeave={() => setMouseEnter(false)}
+            onMouseEnter={() => {
+                setMouseEnter(true);
+            }}
+            onMouseLeave={() => {
+                setMouseEnter(false);
+            }}
             className={cn(
                 "bg-[linear-gradient(110deg,#333_0.6%,#222)] p-4 max-w-md max-h-[20rem] h-full w-full rounded-xl border border-[#eaeaea] dark:border-neutral-600",
                 className
@@ -59,8 +63,8 @@ export const GlowingStarsTitle = ({
 };
 
 export const Illustration = ({ mouseEnter }: { mouseEnter: boolean }) => {
-    const stars = 108; // Total number of stars
-    const columns = 18; // Number of columns in the star grid
+    const stars = 108;
+    const columns = 18;
 
     const [glowingStars, setGlowingStars] = useState<number[]>([]);
 
@@ -92,7 +96,7 @@ export const Illustration = ({ mouseEnter }: { mouseEnter: boolean }) => {
                 const staticDelay = starIdx * 0.01;
                 return (
                     <div
-                        key={`matrix-col-${starIdx}`}
+                        key={`matrix-col-${starIdx}}`}
                         className="relative flex items-center justify-center"
                     >
                         <Star
@@ -113,7 +117,10 @@ export const Illustration = ({ mouseEnter }: { mouseEnter: boolean }) => {
 const Star = ({ isGlowing, delay }: { isGlowing: boolean; delay: number }) => {
     return (
         <motion.div
-            initial={{ scale: 1 }}
+            key={delay}
+            initial={{
+                scale: 1,
+            }}
             animate={{
                 scale: isGlowing ? [1, 1.2, 2.5, 2.2, 1.5] : 1,
                 background: isGlowing ? "#fff" : "#666",
@@ -131,15 +138,21 @@ const Star = ({ isGlowing, delay }: { isGlowing: boolean; delay: number }) => {
 const Glow = ({ delay }: { delay: number }) => {
     return (
         <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{
+                opacity: 0,
+            }}
+            animate={{
+                opacity: 1,
+            }}
             transition={{
                 duration: 2,
                 ease: "easeInOut",
                 delay: delay,
             }}
-            exit={{ opacity: 0 }}
-            className="absolute left-1/2 -translate-x-1/2 z-10 h-[4px] w-[4px] rounded-full bg-blue-500 blur-[1px] shadow-2xl shadow-blue-400"
+            exit={{
+                opacity: 0,
+            }}
+            className="absolute  left-1/2 -translate-x-1/2 z-10 h-[4px] w-[4px] rounded-full bg-blue-500 blur-[1px] shadow-2xl shadow-blue-400"
         />
     );
 };
