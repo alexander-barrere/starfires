@@ -1,46 +1,37 @@
-import React, { useState } from 'react';
-import { Form, Button } from 'react-bootstrap';
+import React from 'react';
+import { useForm } from 'react-hook-form';
 
 const AstroReportForm = ({ onSubmit }) => {
-  const [formData, setFormData] = useState({
-    birthDate: '',
-    birthTime: '',
-    latitude: '',
-    longitude: ''
-  });
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const onFormSubmit = (formData) => {
     onSubmit(formData);
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
-      <Form.Group>
-        <Form.Label>Birth Date</Form.Label>
-        <Form.Control type="date" name="birthDate" value={formData.birthDate} onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Birth Time</Form.Label>
-        <Form.Control type="time" name="birthTime" value={formData.birthTime} onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Latitude</Form.Label>
-        <Form.Control type="number" name="latitude" value={formData.latitude} onChange={handleChange} required />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Longitude</Form.Label>
-        <Form.Control type="number" name="longitude" value={formData.longitude} onChange={handleChange} required />
-      </Form.Group>
-      <Button type="submit">Generate Report</Button>
-    </Form>
+    <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
+      <div className="form-control">
+        <label htmlFor="birthDate" className="label">Birth Date</label>
+        <input id="birthDate" type="date" {...register('birthDate', { required: true })} className="input input-bordered" />
+        {errors.birthDate && <span className="label text-error">Birth date is required</span>}
+      </div>
+      <div className="form-control">
+        <label htmlFor="birthTime" className="label">Birth Time</label>
+        <input id="birthTime" type="time" {...register('birthTime', { required: true })} className="input input-bordered" />
+        {errors.birthTime && <span className="label text-error">Birth time is required</span>}
+      </div>
+      <div className="form-control">
+        <label htmlFor="latitude" className="label">Latitude</label>
+        <input id="latitude" type="number" step="any" {...register('latitude', { required: true })} className="input input-bordered" />
+        {errors.latitude && <span className="label text-error">Latitude is required</span>}
+      </div>
+      <div className="form-control">
+        <label htmlFor="longitude" className="label">Longitude</label>
+        <input id="longitude" type="number" step="any" {...register('longitude', { required: true })} className="input input-bordered" />
+        {errors.longitude && <span className="label text-error">Longitude is required</span>}
+      </div>
+      <input type="submit" className="btn btn-primary" value="Generate Report" />
+    </form>
   );
 };
 

@@ -10,10 +10,7 @@ const handleServerError = (err, res) => {
     res.status(500).send('Server Error');
 };
 
-console.log('UserController file is running.');
-
 exports.register = async (req, res) => {
-    console.log('Register function is called.');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -46,7 +43,6 @@ exports.register = async (req, res) => {
 };
 
 exports.login = async (req, res) => {
-    console.log('Login function is called.');
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -73,30 +69,20 @@ exports.adminLogin = async (req, res) => {
     const { email, password } = req.body;
     try {
         let user = await User.findOne({ email });
-        // Check if user exists and has the admin role
-        if (!user) {
-            return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
-        }
-        if (user.role !== 'admin') { // Assuming 'role' is the field for user roles and 'admin' is the value for administrators
+        if (!user || user.role !== 'admin') {
             return res.status(401).json({ errors: [{ msg: 'Unauthorized, admin access only' }] });
         }
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
             return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
         }
-        const payload = {
-            user: {
-                id: user.id,
-                role: user.role // Including role in the token can be useful
-            }
-        };
+        const payload = { user: { id: user.id, role: user.role } };
         jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1h' }, (err, token) => {
             if (err) throw err;
             res.json({ token });
         });
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server error');
+        handleServerError(err, res);
     }
 };
 
@@ -117,10 +103,9 @@ exports.getAstrologyChart = async (req, res) => {
             message: "Astrology chart generated successfully."
         };
 
-        res.json(astrologyChartData);
+        return res.json(astrologyChartData);
     } catch (err) {
-        console.error(err);
-        res.status(500).send('Server Error');
+        return handleServerError(err, res);
     }
 };
 
@@ -139,8 +124,8 @@ exports.updateProfile = async (req, res) => {
         user.isSubscriber = isSubscriber !== undefined ? isSubscriber : user.isSubscriber;
         user.role = role || user.role;
         await user.save();
-        res.json(user);
-    } catch (err) { handleServerError(err, res); }
+        return res.json(user);
+    } catch (err) { return handleServerError(err, res); }
 };
 
 exports.getUserProfile = async (req, res) => {
@@ -148,17 +133,15 @@ exports.getUserProfile = async (req, res) => {
         // Assuming the user ID is stored in req.user.id from the JWT payload
         const user = await User.findById(req.user.id);
         if (!user) {
-            return res.status(404).send('User not found');
+            return res.status(404).json({ msg: 'User not found' });
         }
         // Optionally remove sensitive information
         user.password = undefined;
         return res.json(user);
     } catch (err) {
-        console.error(err);
-        return res.status(500).send('Server error');
+        return handleServerError(err, res);
     }
 };
-
 
 console.log('Register function:', exports.register);
 console.log('Login function:', exports.login);
