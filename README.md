@@ -60,11 +60,7 @@ Licensed under the ISC license. See the LICENSE file for details.
 
 ## Development Team
 
-- Alex Johnson - Lead Developer
-- Samantha Bloom - Frontend Developer
-- Marcus Chan - Backend Developer
-- Li Wei - UX/UI Designer
-- Raj Patel - DevOps
+- Alex Barrere
 
 ## Contact
 
