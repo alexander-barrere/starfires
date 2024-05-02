@@ -1,15 +1,15 @@
 import React from 'react';
 import { Navbar, Nav } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom'; // Combine the imports for cleaner code
-import { FaUserCircle } from 'react-icons/fa';
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavigationBar = () => {
-  const navigate = useNavigate(); // Move useNavigate inside the component
+  const navigate = useNavigate();
+
   const isAuthenticated = localStorage.getItem('token') ? true : false;
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    navigate('/login'); // Redirect to login after logout
+    navigate('/login');
   };
 
   return (
@@ -37,7 +37,6 @@ const NavigationBar = () => {
           </Nav.Item>
         </Nav>
         <Nav>
-          {/* User-specific actions */}
           {!isAuthenticated && (
             <>
               <Nav.Item>
@@ -49,7 +48,6 @@ const NavigationBar = () => {
             </>
           )}
           <Nav>
-            {/* Other navigation items */}
             {isAuthenticated && (
               <Nav.Item>
                 <Link to="/cart" className="nav-link">Cart</Link>
@@ -60,7 +58,7 @@ const NavigationBar = () => {
             <>
               <Nav.Item>
                 <Link to="/profile" className="nav-link">
-                  <FaUserCircle /> Profile
+                  Profile
                 </Link>
               </Nav.Item>
               <Nav.Item onClick={handleLogout} className="nav-link" style={{ cursor: 'pointer' }}>

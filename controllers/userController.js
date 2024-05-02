@@ -15,7 +15,12 @@ exports.register = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { username, email, password, firstName, lastName, birthDate, birthTime, city, state, country } = req.body;
+    const { username, email, password, firstName, lastName, birthDateTime, city, state, country } = req.body;
+
+    if (!birthDateTime) {
+        return res.status(400).json({ msg: 'Birth date and time are required' });
+    }
+
     try {
         let user = await User.findOne({ email });
         if (user) return res.status(400).json({ errors: [{ msg: 'User already exists' }] });
@@ -23,8 +28,8 @@ exports.register = async (req, res) => {
         const { latitude, longitude } = await geocode(city, state, country);
         user = new User({
             firstName, lastName, username, email, password,
-            birthDate: birthDate ? new Date(birthDate) : null,
-            birthTime, city, state, country,
+            birthDateTime: new Date(birthDateTime),
+            city, state, country,
             location: { type: 'Point', coordinates: [parseFloat(longitude), parseFloat(latitude)] }
         });
         const salt = await bcrypt.genSalt(10);
@@ -113,12 +118,11 @@ exports.getAstrologyChart = async (req, res) => {
 exports.updateProfile = async (req, res) => {
     console.log('UpdateProfile function is called.');
     try {
-        const { birthDate, birthTime, birthLatitude, birthLongitude, isSubscriber, role } = req.body;
+        const { birthDateTime, birthLatitude, birthLongitude, isSubscriber, role } = req.body;
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ msg: 'User not found' });
         // Update fields
-        user.birthDate = birthDate;
-        user.birthTime = birthTime;
+        user.birthDateTime = birthDateTime;
         user.birthLatitude = birthLatitude;
         user.birthLongitude = birthLongitude;
         user.isSubscriber = isSubscriber !== undefined ? isSubscriber : user.isSubscriber;

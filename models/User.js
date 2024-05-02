@@ -23,13 +23,9 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  birthDate: {
+  birthDateTime: {
     type: Date,
-    required: false
-  },
-  birthTime: {
-    type: String,
-    required: false
+    required: true
   },
   location: {
     type: {

@@ -15,6 +15,9 @@ const userRoutes = require('./routes/userRoutes'); // Only one import needed
 const blogRoutes = require('./routes/blogRoutes');
 const subscriptionRoutes = require('./routes/subscriptionRoutes');
 
+require('dotenv').config();
+console.log(process.env);
+
 // Database connection
 connectDB();
 

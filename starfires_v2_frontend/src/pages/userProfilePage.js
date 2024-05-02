@@ -28,6 +28,10 @@ function UserProfile() {
     if (error) return <div className="container mt-5 error"><div>{error}</div></div>;
     if (!userData) return <div className="container mt-5 error"><div>No user data found</div></div>;
 
+    const birthDateTime = new Date(userData.birthDateTime);
+    const birthDate = birthDateTime.toLocaleDateString();
+    const birthTime = birthDateTime.toLocaleTimeString();
+
     return (
         <div className="container mt-5">
             <div className="profile-container">
@@ -43,10 +47,10 @@ function UserProfile() {
                         <label>Role:</label><span>{userData.role}</span>
                     </div>
                     <div className="profile-field">
-                        <label>Birth Date:</label><span>{userData.birthDate}</span>
+                        <label>Birth Date:</label><span>{birthDate}</span>
                     </div>
                     <div className="profile-field">
-                        <label>Birth Time:</label><span>{userData.birthTime}</span>
+                        <label>Birth Time:</label><span>{birthTime}</span>
                     </div>
                 </div>
             </div>

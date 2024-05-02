@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Container, Form, Button } from 'react-bootstrap';
 import axios from '../utils/axiosDefaults';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment-timezone';
 
 const RegistrationPage = () => {
     const [firstName, setFirstName] = useState('');
@@ -15,7 +16,8 @@ const RegistrationPage = () => {
     const [city, setCity] = useState('');
     const [state, setState] = useState(''); // Consider renaming to avoid confusion with React state
     const [country, setCountry] = useState('');
-
+    const [userData] = useState({ timezone: 'UTC' }); // Default timezone is UTC
+    
     const navigate = useNavigate();
 
     const handleRegistration = async (event) => {
@@ -41,16 +43,14 @@ const RegistrationPage = () => {
         }
     
         try {
-            const formattedBirthDate = new Date(birthDate).toISOString();
-    
-            const response = await axios.post('/users/register', {
+            const birthDateTime = moment.tz(`${birthDate}T${birthTime}`, 'YYYY-MM-DDTHH:mm', userData.timezone).toISOString();    
+            await axios.post('/users/register', {
                 username,
                 email,
                 password,
                 firstName,
                 lastName,
-                birthDate: formattedBirthDate,
-                birthTime,
+                birthDateTime, // Send birthDateTime instead of birthDate and birthTime
                 city,
                 state,
                 country,
