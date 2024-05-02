@@ -8,7 +8,7 @@ const Treasures = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/products');
+                const response = await axios.get('http://www.starfires.io/api/products');
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
