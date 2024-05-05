@@ -4,7 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon"
+    "start": "pm2 start --name blog hexo -- s",
+    "stop": "pm2 stop blog",
+    "delete": "pm2 delete blog",
+    "status": "pm2 status blog",
+    "restart": "pm2 restart blog"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +26,7 @@
     "express": "^4.17.1",
     "express-validator": "^7.0.1",
     "framer-motion": "^11.0.6",
+    "hexo-migrator-wordpress": "^2.1.2",
     "jsdom": "^24.0.0",
     "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",

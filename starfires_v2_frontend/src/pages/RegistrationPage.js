@@ -43,7 +43,7 @@ const RegistrationPage = () => {
         }
     
         try {
-            const birthDateTime = moment.tz(`${birthDate}T${birthTime}`, 'YYYY-MM-DDTHH:mm', userData.timezone).toISOString();    
+            const birthDateTime = moment.tz(`${birthDate}T${birthTime}`, 'YYYY-MM-DDTHH:mm', userData.timezone).toISOString();
             await axios.post('/users/register', {
                 username,
                 email,

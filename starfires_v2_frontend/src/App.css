@@ -231,39 +231,69 @@ h3 {
 
 /* User Profile enhancements */
 .profile-container {
-    max-width: 600px;
-    margin: 0 auto;
+    width: 60%;
     padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    background-color: #180051;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    /* Add some gradient background */
+    background-image: linear-gradient(to right, #FFD700, #FFA500);
 }
 
 .profile-title {
     text-align: center;
     color: #333;
+    font-size: 2em;
+    margin-bottom: 20px;
+    /* Add some text shadow */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .profile-content {
-    margin-top: 20px;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 10px 20px;
 }
 
 .profile-field {
-    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
 }
 
 .profile-field label {
     font-weight: bold;
+    color: #555;
 }
 
 .profile-field span {
     margin-left: 10px;
+    color: #333;
 }
 
 .error {
     color: red;
+    font-weight: bold;
+    /* Add some animation */
+    animation: shake 0.5s infinite;
 }
 
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    25% {
+        transform: translateX(-5px);
+    }
+    50% {
+        transform: translateX(5px);
+    }
+    75% {
+        transform: translateX(-5px);
+    }
+    100% {
+        transform: translateX(0);
+    }
+}
 
 /* Enhancements for immersive experience */
 #root {

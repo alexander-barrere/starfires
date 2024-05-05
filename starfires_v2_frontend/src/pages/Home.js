@@ -1,7 +1,18 @@
 import React from 'react';
-import { Container, Row, Col, Button, Card } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 const Home = () => {
+  const renderCard = (image, title, text, buttonText) => (
+    <Col md={4}>
+        <img variant="top" src={image} />
+        <div>
+          <h3>{title}</h3>
+          <p>{text}</p>
+          <Button variant="primary">{buttonText}</Button>
+        </div>
+    </Col>
+  );
+
   return (
     <Container>
       <Row className="justify-content-md-center mt-5">
@@ -12,36 +23,9 @@ const Home = () => {
       </Row>
 
       <Row className="my-4">
-        <Col md={4}>
-          <Card>
-            <Card.Img variant="top" src="/images/venus.jpg" />
-            <Card.Body>
-              <Card.Title>Live Astrology Chat</Card.Title>
-              <Card.Text>Join our live sessions and chat with Christine in real-time.</Card.Text>
-              <Button variant="primary">Join Now</Button>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card>
-            <Card.Img variant="top" src="/images/venus_2.jpg" />
-            <Card.Body>
-              <Card.Title>Astrology Treasures</Card.Title>
-              <Card.Text>Discover our exclusive selection of astrology books.</Card.Text>
-              <Button variant="primary">Shop Now</Button>
-            </Card.Body>
-          </Card>
-        </Col>
-        <Col md={4}>
-          <Card>
-            <Card.Img variant="top" src="/images/saturn.jpg" />
-            <Card.Body>
-              <Card.Title>Learn & Master</Card.Title>
-              <Card.Text>Enroll in our courses and master the art of astrology.</Card.Text>
-              <Button variant="primary">Learn More</Button>
-            </Card.Body>
-          </Card>
-        </Col>
+        {renderCard("/images/venus.jpg", "Live Astrology Chat", "Join our live sessions and chat with Christine in real-time.", "Join Now")}
+        {renderCard("/images/venus_2.jpg", "Astrology Treasures", "Discover our exclusive selection of astrology books.", "Shop Now")}
+        {renderCard("/images/saturn.jpg", "Learn & Master", "Enroll in our courses and master the art of astrology.", "Learn More")}
       </Row>
 
       <Row className="my-4">
@@ -57,7 +41,7 @@ const Home = () => {
           <h2>Customer Testimonials</h2>
           {/* Placeholder for testimonials */}
           <p>"I've never felt so understood. The personal reading was spot-on and enlightening!" - Jane Doe</p>
-          {/* You would typically fetch and map through an array of testimonials here */}
+          {/* fetch and map through an array of testimonials here */}
         </Col>
       </Row>
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import moment from 'moment-timezone';
 import '../App.css'; // Make sure this path is correct
 
 function UserProfile() {
@@ -28,9 +29,9 @@ function UserProfile() {
     if (error) return <div className="container mt-5 error"><div>{error}</div></div>;
     if (!userData) return <div className="container mt-5 error"><div>No user data found</div></div>;
 
-    const birthDateTime = new Date(userData.birthDateTime);
-    const birthDate = birthDateTime.toLocaleDateString();
-    const birthTime = birthDateTime.toLocaleTimeString();
+    const birthDateTime = moment.tz(userData.birthDateTime, userData.timezone);
+    const birthDate = birthDateTime.format('YYYY-MM-DD');
+    const birthTime = birthDateTime.format('HH:mm:ss');
 
     return (
         <div className="container mt-5">

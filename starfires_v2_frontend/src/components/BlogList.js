@@ -7,7 +7,7 @@ const BlogList = () => {
 
   useEffect(() => {
     const fetchPosts = async () => {
-      const result = await axios.get('http://www.starfires.io/api/posts');
+      const result = await axios.get('https://www.starfires.io/blog');
       setPosts(result.data);
     };
     fetchPosts();
@@ -15,7 +15,7 @@ const BlogList = () => {
 
   const handleDelete = async (postId) => {
     try {
-      await axios.delete(`http://www.starfires.io/api/posts/${postId}`);
+      await axios.delete(`https://www.starfires.io/api/posts/${postId}`);
       setPosts(posts.filter(post => post._id !== postId)); // Remove the post from the local state
     } catch (error) {
       console.error("Error deleting the post:", error.response.data);

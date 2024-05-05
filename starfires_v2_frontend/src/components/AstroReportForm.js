@@ -11,14 +11,9 @@ const AstroReportForm = ({ onSubmit }) => {
   return (
     <form onSubmit={handleSubmit(onFormSubmit)} className="space-y-6">
       <div className="form-control">
-        <label htmlFor="birthDate" className="label">Birth Date</label>
-        <input id="birthDate" type="date" {...register('birthDate', { required: true })} className="input input-bordered" />
-        {errors.birthDate && <span className="label text-error">Birth date is required</span>}
-      </div>
-      <div className="form-control">
-        <label htmlFor="birthTime" className="label">Birth Time</label>
-        <input id="birthTime" type="time" {...register('birthTime', { required: true })} className="input input-bordered" />
-        {errors.birthTime && <span className="label text-error">Birth time is required</span>}
+        <label htmlFor="birthDateTime" className="label">Birth Date and Time</label>
+        <input id="birthDateTime" type="datetime-local" {...register('birthDateTime', { required: true })} className="input input-bordered" />
+        {errors.birthDateTime && <span className="label text-error">Birth date and time is required</span>}
       </div>
       <div className="form-control">
         <label htmlFor="latitude" className="label">Latitude</label>
