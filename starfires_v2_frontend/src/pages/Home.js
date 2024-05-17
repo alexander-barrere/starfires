@@ -4,7 +4,7 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 const Home = () => {
   const renderCard = (image, title, text, buttonText) => (
     <Col md={4}>
-        <img variant="top" src={image} />
+        <img variant="top" src={image} alt={title} />
         <div>
           <h3>{title}</h3>
           <p>{text}</p>
@@ -12,7 +12,7 @@ const Home = () => {
         </div>
     </Col>
   );
-
+  
   return (
     <Container>
       <Row className="justify-content-md-center mt-5">
