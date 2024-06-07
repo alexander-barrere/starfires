@@ -27,10 +27,17 @@ exports.register = async (req, res) => {
 
         const { latitude, longitude } = await geocode(city, state, country);
         user = new User({
-            firstName, lastName, username, email, password,
+            firstName,
+            lastName,
+            username,
+            email,
+            password,
             birthDateTime: new Date(birthDateTime),
-            city, state, country,
-            location: { type: 'Point', coordinates: [parseFloat(longitude), parseFloat(latitude)] }
+            city,
+            state,
+            country,
+            latitude,
+            longitude
         });
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
@@ -54,7 +61,7 @@ exports.login = async (req, res) => {
     }
     const { email, password } = req.body;
     try {
-        let user = await User.findOne({ email });
+        let user = await User.findOne({ email: email });
         if (!user) return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] });
@@ -99,13 +106,17 @@ exports.getAstrologyChart = async (req, res) => {
             return res.status(404).json({ msg: 'User not found' });
         }
 
-        // Example: Generate or retrieve the astrology chart based on user data
-        // This is where you'd integrate with your astrology chart generation logic
-        // For demonstration, I'll just return a placeholder response
+        // Use the user's stored latitude and longitude to generate the astrology chart
+        const { latitude, longitude } = user;
+
+        // Generate the astrology chart using the latitude and longitude
+        // Replace this with your actual astrology chart generation logic
         const astrologyChartData = {
             user: user.name,
             chart: "Placeholder for user's astrology chart data",
-            message: "Astrology chart generated successfully."
+            message: "Astrology chart generated successfully.",
+            latitude,
+            longitude
         };
 
         return res.json(astrologyChartData);
@@ -114,17 +125,14 @@ exports.getAstrologyChart = async (req, res) => {
     }
 };
 
-
 exports.updateProfile = async (req, res) => {
     console.log('UpdateProfile function is called.');
     try {
-        const { birthDateTime, birthLatitude, birthLongitude, isSubscriber, role } = req.body;
+        const { birthDateTime, isSubscriber, role } = req.body;
         const user = await User.findById(req.user.id);
         if (!user) return res.status(404).json({ msg: 'User not found' });
         // Update fields
         user.birthDateTime = birthDateTime;
-        user.birthLatitude = birthLatitude;
-        user.birthLongitude = birthLongitude;
         user.isSubscriber = isSubscriber !== undefined ? isSubscriber : user.isSubscriber;
         user.role = role || user.role;
         await user.save();

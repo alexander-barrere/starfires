@@ -27,16 +27,13 @@ const UserSchema = new mongoose.Schema({
     type: Date,
     required: true
   },
-  location: {
-    type: {
-      type: String, 
-      enum: ['Point'], 
-      default: 'Point'
-    },
-    coordinates: {
-      type: [Number], // [longitude, latitude]
-      index: '2dsphere' // Create a geospatial index
-    }
+  latitude: {
+    type: Number,
+    required: true
+  },
+  longitude: {
+      type: Number,
+      required: true
   },
   created_at: {
     type: Date,

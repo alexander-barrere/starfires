@@ -1,5 +1,10 @@
 import React from 'react';
 import { Container, Row, Col, Button } from 'react-bootstrap';
+import {
+  GlowingStarsBackgroundCard,
+  GlowingStarsDescription,
+  GlowingStarsTitle,
+} from "../components/ui/glowing-stars.tsx";
 
 const Home = () => {
   const renderCard = (image, title, text, buttonText) => (
@@ -17,8 +22,10 @@ const Home = () => {
     <Container>
       <Row className="justify-content-md-center mt-5">
         <Col md={8}>
-          <h1>Welcome to Starfires</h1>
-          <p className="lead">Explore the mysteries of the stars and unlock the secrets of your zodiac.</p>
+          <GlowingStarsBackgroundCard>
+            <GlowingStarsTitle>Welcome to Starfires</GlowingStarsTitle>
+            <GlowingStarsDescription>Astrological Services</GlowingStarsDescription>
+          </GlowingStarsBackgroundCard>
         </Col>
       </Row>
 

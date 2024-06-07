@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import moment from 'moment-timezone';
-import '../App.css'; // Make sure this path is correct
+import '../App.css';
 
 function UserProfile() {
     const [userData, setUserData] = useState(null);
@@ -19,7 +19,7 @@ function UserProfile() {
             setUserData(response.data);
             setLoading(false);
         })
-        .catch(error => {
+        .catch(() => {
             setError('An error occurred while fetching user data');
             setLoading(false);
         });
@@ -29,9 +29,8 @@ function UserProfile() {
     if (error) return <div className="container mt-5 error"><div>{error}</div></div>;
     if (!userData) return <div className="container mt-5 error"><div>No user data found</div></div>;
 
-    const birthDateTime = moment.tz(userData.birthDateTime, userData.timezone);
-    const birthDate = birthDateTime.format('YYYY-MM-DD');
-    const birthTime = birthDateTime.format('HH:mm:ss');
+    const birthDateTime = moment(userData.birthDateTime);
+    const formattedBirthDateTime = birthDateTime.format('YYYY-MM-DD HH:mm');
 
     return (
         <div className="container mt-5">
@@ -45,13 +44,22 @@ function UserProfile() {
                         <label>Email:</label><span>{userData.email}</span>
                     </div>
                     <div className="profile-field">
+                        <label>First Name:</label><span>{userData.firstName}</span>
+                    </div>
+                    <div className="profile-field">
+                        <label>Last Name:</label><span>{userData.lastName}</span>
+                    </div>
+                    <div className="profile-field">
+                        <label>Birth Date and Time:</label><span>{formattedBirthDateTime}</span>
+                    </div>
+                    <div className="profile-field">
+                        <label>Latitude:</label><span>{userData.latitude}</span>
+                    </div>
+                    <div className="profile-field">
+                        <label>Longitude:</label><span>{userData.longitude}</span>
+                    </div>
+                    <div className="profile-field">
                         <label>Role:</label><span>{userData.role}</span>
-                    </div>
-                    <div className="profile-field">
-                        <label>Birth Date:</label><span>{birthDate}</span>
-                    </div>
-                    <div className="profile-field">
-                        <label>Birth Time:</label><span>{birthTime}</span>
                     </div>
                 </div>
             </div>

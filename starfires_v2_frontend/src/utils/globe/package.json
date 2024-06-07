@@ -1,0 +1,14 @@
+{
+  "name": "d573f7f5de582a08",
+  "main": "d573f7f5de582a08@274.js",
+  "version": "274.0.0",
+  "homepage": "https://observablehq.com/d/d573f7f5de582a08",
+  "author": {
+    "name": "exelan",
+    "url": "https://observablehq.com/@exelan"
+  },
+  "type": "module",
+  "peerDependencies": {
+    "@observablehq/runtime": "4 - 5"
+  }
+}
